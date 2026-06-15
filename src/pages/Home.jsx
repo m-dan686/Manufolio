@@ -212,7 +212,7 @@ const Home = () => {
             <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
                 {/* LEFT */}
                 <div className="space-y-6">
-                    <p className="hero-subtext text-green text-2xl bold">Hello, I'm</p>
+                    <p className="hero-subtext text-green text-2xl bold">Hi, I'm</p>
                     <h1
                         ref={nameRef}
                         className="text-5xl md:text-6xl font-bold text-text-primary"
@@ -220,38 +220,33 @@ const Home = () => {
                         Manu Anandan
                     </h1>
                     <h2 className="hero-subtext text-3xl opacity-80">
-                        <span className="text-orange">Aspiring Machine Learning Engineer | AI Developer</span>
+                        <span className="text-orange">AI & Full Stack Developer</span>
                     </h2>
                     <p className="hero-subtext opacity-60 max-w-lg text-justify">
-                        Motivated and Hardworking Information Technology student with a strong
-                        interest in Artificial Intelligence, Machine Learning, and software
-                        development. Passionate about building intelligent systems and data-driven
-                        applications that solve real-world problems. Experienced in developing AI-based academic projects, data analysis models, and web applications. A
-                        collaborative learner with strong analytical thinking and problem-solving
-                        abilities, seeking opportunities to apply technical knowledge and
-                        continuously expand skills in AI and emerging technologies.
+                        AI & Full Stack Developer building intelligent systems 
+                        with React, Machine Learning, and Data-driven design.
                     </p>
                     <p className="hero-subtext opacity-60 max-w-lg">
-                        Currently pursuing <strong>Information Technology</strong> at Sri Krishna College of Technology, Coimbatore,
-                        I transform ideas into premium, motion‑driven digital experiences with a focus on clarity, reproducibility,
-                        and professional polish.
-                    </p>
-                    <p className="hero-subtext opacity-60 max-w-lg">
-                        🚀 Passionate about developer experience, I ensure every project is documented, secure, and delightful to use.
+                        I create applications that combine intelligent backend logic 
+                        with engaging, animated user experiences.
                     </p>
 
                     <div className="flex gap-4 pt-8">
-                        <Link
-                            to="/projects"
+                        <a
+                            href="#projects"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
                             onMouseMove={handleMagneticHover}
                             onMouseLeave={handleMagneticLeave}
                             className="hero-cta px-8 py-4 bg-orange text-white rounded-full font-bold flex items-center gap-2"
                         >
                             View Work <FiArrowRight />
-                        </Link>
+                        </a>
 
                         <a
-                            href="/files/Manu Anandan G - Resume.pdf"
+                            href={`${import.meta.env.BASE_URL}files/Manu Anandan G - Resume.pdf`}
                             target="_blank"
                             rel="noopener noreferrer"
                             onMouseMove={handleMagneticHover}
@@ -276,7 +271,7 @@ const Home = () => {
                         className="relative w-72 h-72 rounded-full overflow-hidden border-4 border-bg-light shadow-2xl cursor-pointer"
                     >
                         <img
-                            src="/files/portfolio_images/photo.jpeg"
+                            src={`${import.meta.env.BASE_URL}files/portfolio_images/photo2.jpeg`}
                             alt="Manu"
                             className="w-full h-full object-cover"
                         />
@@ -297,7 +292,7 @@ const Home = () => {
 
                     {/* 10+ PROJECTS */}
                     <div className="orbiting-projects absolute bg-bg-light/80 backdrop-blur-md border border-orange p-4 rounded-2xl text-center">
-                        <span className="text-xl font-bold text-orange">10+</span>
+                        <span className="text-xl font-bold text-orange">5+</span>
                         <span className="block text-xs opacity-70">PROJECTS</span>
                     </div>
 

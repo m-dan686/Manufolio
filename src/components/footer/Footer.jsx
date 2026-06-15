@@ -3,11 +3,11 @@ import { FaTwitter, FaInstagram, FaWhatsapp, FaGithub, FaLinkedin } from 'react-
 import gsap from 'gsap';
 
 const socialLinks = [
-    { icon: <FaTwitter />, url: '#', name: 'Twitter' },
-    { icon: <FaInstagram />, url: '#', name: 'Instagram' },
+    { icon: <FaTwitter />, url: 'https://x.com/m_dan686', name: 'Twitter' },
+    { icon: <FaInstagram />, url: 'https://www.instagram.com/m_dan686/', name: 'Instagram' },
     { icon: <FaWhatsapp />, url: '#', name: 'WhatsApp' },
-    { icon: <FaGithub />, url: '#', name: 'GitHub' },
-    { icon: <FaLinkedin />, url: '#', name: 'LinkedIn' },
+    { icon: <FaGithub />, url: 'https://github.com/m-dan686', name: 'GitHub' },
+    { icon: <FaLinkedin />, url: 'https://www.linkedin.com/in/manu-anandan/', name: 'LinkedIn' },
 ];
 
 const Footer = () => {

@@ -4,13 +4,14 @@ import { FiDownload, FiUnlock } from "react-icons/fi";
 import gsap from "gsap";
 
 const downloadableFiles = [
-    { name: "resume.pdf", path: "/files/Manu Anandan G - Resume.pdf", label: "My Resume" },
-    { name: "10th-marksheet.pdf", path: "/files/academics/school/10th-marksheet.pdf", label: "10th Marksheet" },
-    { name: "11th-marksheet.pdf", path: "/files/academics/school/11th-marksheet.pdf", label: "11th Marksheet" },
-    { name: "12th-marksheet.pdf", path: "/files/academics/school/12th-marksheet.pdf", label: "12th Marksheet" },
-    { name: "sem1-marksheet.pdf", path: "/files/academics/college/sem1-marksheet.pdf", label: "Sem 1 Marksheet" },
-    { name: "sem2-marksheet.pdf", path: "/files/academics/college/sem2-marksheet.pdf", label: "Sem 2 Marksheet" },
-    { name: "sem3-marksheet.pdf", path: "/files/academics/college/sem3-marksheet.pdf", label: "Sem 3 Marksheet" }
+    { name: "resume.pdf", path: import.meta.env.BASE_URL + "files/Manu Anandan G - Resume.pdf", label: "My Resume" },
+    { name: "10th-marksheet.pdf", path: import.meta.env.BASE_URL + "files/academics/school/10th-marksheet.pdf", label: "10th Marksheet" },
+    { name: "11th-marksheet.pdf", path: import.meta.env.BASE_URL + "files/academics/school/11th-marksheet.pdf", label: "11th Marksheet" },
+    { name: "12th-marksheet.pdf", path: import.meta.env.BASE_URL + "files/academics/school/12th-marksheet.pdf", label: "12th Marksheet" },
+    { name: "sem1-marksheet.pdf", path: import.meta.env.BASE_URL + "files/academics/college/sem1-marksheet.pdf", label: "Sem 1 Marksheet" },
+    { name: "sem2-marksheet.pdf", path: import.meta.env.BASE_URL + "files/academics/college/sem2-marksheet.pdf", label: "Sem 2 Marksheet" },
+    { name: "sem3-marksheet.pdf", path: import.meta.env.BASE_URL + "files/academics/college/sem3-marksheet.pdf", label: "Sem 3 Marksheet" },
+    { name: "sem4-marksheet.pdf", path: import.meta.env.BASE_URL + "files/academics/college/sem4-marksheet.pdf", label: "Sem 4 Marksheet" }
 ];
 
 const Downloads = () => {

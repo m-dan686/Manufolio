@@ -1,9 +1,10 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 
 const CertificateModal = ({ isOpen, onClose, pdf, title }) => {
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <motion.div
@@ -47,7 +48,8 @@ const CertificateModal = ({ isOpen, onClose, pdf, title }) => {
                     </motion.div>
                 </motion.div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 

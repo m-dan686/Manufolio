@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from './components/animations/PageTransition';
 import Home from './pages/Home';
@@ -13,18 +13,27 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
+const SinglePagePortfolio = () => {
+    return (
+        <div className="scroll-smooth">
+            <section id="home"><Home /></section>
+            <section id="about"><About /></section>
+            <section id="projects"><Projects /></section>
+            <section id="certifications"><Certifications /></section>
+            <section id="downloads"><Downloads /></section>
+            <section id="contact"><Contact /></section>
+        </div>
+    );
+};
+
 const AppRoutes = () => {
     const location = useLocation();
 
     return (
         <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-                <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-                <Route path="/projects" element={<PageTransition><Projects /></PageTransition>} />
-                <Route path="/downloads" element={<PageTransition><Downloads /></PageTransition>} />
-                <Route path="/certifications" element={<PageTransition><Certifications /></PageTransition>} />
-                <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+                {/* Main Single Page Layout */}
+                <Route path="/" element={<PageTransition><SinglePagePortfolio /></PageTransition>} />
 
                 {/* Admin CMS Routes */}
                 <Route path="/admin" element={<AdminLogin />} />
@@ -32,6 +41,9 @@ const AppRoutes = () => {
                     <Route path="dashboard" element={<AdminDashboard />} />
                     {/* Placeholder for future admin sub-pages */}
                 </Route>
+                
+                {/* Fallback for removed multi-page routes */}
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </AnimatePresence>
     );

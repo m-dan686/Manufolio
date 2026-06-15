@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
 
 export default function PPTViewer({ project, onClose }) {
@@ -31,7 +32,7 @@ export default function PPTViewer({ project, onClose }) {
 
     const isMobile = window.innerWidth < 768;
 
-    return (
+    return createPortal(
         <div className="ppt-backdrop" onClick={onClose}>
             <div
                 className="ppt-modal"
@@ -79,6 +80,7 @@ export default function PPTViewer({ project, onClose }) {
                     </>
                 )}
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

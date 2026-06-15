@@ -101,42 +101,65 @@ const About = () => {
         });
       });
 
-      /* ACHIEVEMENTS – Scale + Focus */
-      gsap.from(".achievement-card", {
-        scale: 0.85,
-        opacity: 0,
-        filter: "blur(6px)",
-        stagger: 0.15,
-        duration: 0.8,
-        ease: "power3.out",
+      /* ================= MOTION PREMIUM UPGRADE ================= */
+      
+      // 1. Text Entry Animation
+      gsap.from(".section-title", {
         scrollTrigger: {
-          trigger: ".achievements-section",
+          trigger: ".section-title",
           start: "top 85%",
         },
-      });
-
-      /* FUTURE GOALS – Forward Motion */
-      gsap.from(".goal-card", {
-        x: 60,
+        y: 40,
         opacity: 0,
-        stagger: 0.15,
-        duration: 0.8,
+        duration: 1,
         ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".vision-section:last-of-type",
-          start: "top 85%",
-        },
+        stagger: 0.2
       });
 
-      // Hover lift (cards only) - ENHANCED
-      gsap.utils.toArray(".hover-card").forEach(card => {
+      // 2. Cards Stagger Entry
+      ScrollTrigger.batch(".motion-card", {
+        start: "top 85%",
+        onEnter: batch =>
+          gsap.fromTo(
+            batch,
+            {
+              y: 60,
+              opacity: 0,
+              scale: 0.95
+            },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              stagger: 0.15,
+              duration: 0.8,
+              ease: "power3.out"
+            }
+          )
+      });
+
+      // 3. Subtle Float (Background Life)
+      gsap.to(".motion-card", {
+        y: "+=6",
+        duration: 2,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.2
+      });
+
+      // 4. Hover Interactions (Premium Feel)
+      gsap.utils.toArray(".motion-card").forEach(card => {
         card.addEventListener("mouseenter", () => {
           gsap.to(card, {
             y: -10,
-            scale: 1.05,
-            boxShadow: "0 15px 40px rgba(0,255,150,0.25)",
-            duration: 0.25,
-            ease: "power2.out"
+            scale: 1.03,
+            boxShadow: `
+              0 20px 40px rgba(34,197,94,0.25),
+              0 0 20px rgba(249,115,22,0.25)
+            `,
+            duration: 0.3,
+            ease: "power3.out"
           });
         });
 
@@ -145,8 +168,67 @@ const About = () => {
             y: 0,
             scale: 1,
             boxShadow: "0 0 0 rgba(0,0,0,0)",
+            backgroundImage: "none",
+            duration: 0.3
+          });
+        });
+
+        // 5. Cursor-follow glow inside card
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          gsap.to(card, {
+            backgroundImage: `radial-gradient(circle at ${x}px ${y}px, rgba(34,197,94,0.12), transparent 60%)`,
+            duration: 0.2
+          });
+        });
+      });
+
+      // Enhanced Hover/Touch Logic for Fun Fact Cards
+      gsap.utils.toArray(".fun-fact-card").forEach(card => {
+        const hoverIn = () => {
+          card.classList.add("active");
+
+          gsap.to(card, {
+            y: -12,
+            scale: 1.04,
+            boxShadow: "0 20px 40px rgba(34,197,94,0.25), 0 0 20px rgba(249,115,22,0.25)",
             duration: 0.3,
-            ease: "power2.out"
+            ease: "power3.out"
+          });
+        };
+
+        const hoverOut = () => {
+          card.classList.remove("active");
+
+          gsap.to(card, {
+            y: 0,
+            scale: 1,
+            boxShadow: "0 0 0 rgba(0,0,0,0)",
+            duration: 0.3,
+            ease: "power3.out"
+          });
+        };
+
+        // Desktop hover
+        card.addEventListener("mouseenter", hoverIn);
+        card.addEventListener("mouseleave", hoverOut);
+
+        // Mobile touch support
+        card.addEventListener("touchstart", hoverIn);
+        card.addEventListener("touchend", hoverOut);
+
+        // Cursor-follow glow
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          gsap.to(card, {
+            background: `radial-gradient(circle at ${x}px ${y}px, rgba(34,197,94,0.15), transparent 60%)`,
+            duration: 0.2
           });
         });
       });
@@ -157,20 +239,35 @@ const About = () => {
   }, []);
 
   const timelineData = [
-    { year: 'Present', role: 'B.Tech Student', desc: 'Sri Krishna College Of Technology', side: 'left' },
-    { year: '2022 - 2024', role: 'HSC Student', desc: 'Carmel Garden Matriculation Higher Secondary School', side: 'right' },
-    { year: '2010 - 2022', role: 'Schooling', desc: 'Carmel Garden Matriculation Higher Secondary School', side: 'left' }
+    {
+      year: '2024 – Present',
+      role: 'B.Tech – Information Technology',
+      desc: 'Sri Krishna College of Technology | CGPA: 8.7',
+      side: 'left'
+    },
+    {
+      year: '2022 – 2024',
+      role: 'Higher Secondary',
+      desc: 'Carmel Garden MHSS | 12th: 86%, 11th: 89%',
+      side: 'right'
+    },
+    {
+      year: '2010 – 2022',
+      role: 'Schooling',
+      desc: 'Carmel Garden MHSS | 10th: 91%',
+      side: 'left'
+    }
   ];
 
   const skills = [
-    { n: 'React / Next.js', v: '90%' },
+    { n: 'React / Frontend Development', v: '90%' },
+    { n: 'JavaScript / Web Apps', v: '90%' },
+    { n: 'Python / Machine Learning', v: '85%' },
+    { n: 'Artificial Intelligence', v: '80%' },
+    { n: 'Data Science & Analytics', v: '80%' },
     { n: 'Node.js / Express', v: '80%' },
-    { n: 'Python / AI & ML', v: '75%' },
-    { n: 'UI / UX Design', v: '85%' },
-    { n: 'Spring Boot (JWT, RBAC)', v: '85%' },
-    { n: 'Three.js & GSAP', v: '80%' },
-    { n: 'Tailwind CSS', v: '90%' },
-    { n: 'Databases (MySQL, MongoDB)', v: '80%' }
+    { n: 'MySQL / MongoDB', v: '80%' },
+    { n: 'UI/UX + GSAP Animations', v: '85%' }
   ];
 
   return (
@@ -245,7 +342,10 @@ const About = () => {
               'Creative Thinker',
               'Rapid Learner',
               'Detail Oriented',
-              'Team Catalyst'
+              'Team Catalyst',
+              'Leadership Potential',
+              'Adaptable Problem Solver',
+              'Hard + Smart Worker'
             ].map((p, i) => (
               <div key={i} className="hover-card p-6 bg-white/5 border border-orange/20 rounded-xl text-center">
                 <span className="font-bold text-text-primary">{p}</span>
@@ -263,12 +363,12 @@ const About = () => {
         </h2>
         <div className="grid md:grid-cols-3 gap-6">
           {[
-            "Favorite Tech Stack: React + Spring Boot",
-            "Favorite GSAP Plugin: ScrollTrigger",
-            "Debugging Snack: Coffee ☕",
-            "Motto: Clarity is power",
-            "Passion: Animated UI design",
-            "Hobby: Mentoring peers"
+            "Favorite Stack: React + Spring Boot",
+            "Favorite Field: AI & Machine Learning",
+            "Enjoy building animated UI",
+            "Love solving real-world problems",
+            "Energy fuel: Sweets ",
+            "Hackathon enthusiast"
           ].map((fact, i) => (
             <div key={i} className="fun-fact-card hover-card p-5 bg-white/5 rounded-lg text-center">
               {fact}
@@ -279,19 +379,19 @@ const About = () => {
 
       {/* ACHIEVEMENTS */}
       <div className="achievements-section max-w-4xl mx-auto mb-24">
-        <h2 className="text-3xl font-bold mb-8 text-text-primary">
+        <h2 className="section-title text-3xl font-bold mb-8 text-text-primary">
           Key <span className="text-green">Achievements</span>
         </h2>
         <div className="grid md:grid-cols-2 gap-6">
           {[
-            "Class Representative & Peer Leader",
-            "Department Third Rank",
-            "Built Digital Warranty Tracker",
-            "Animated Portfolio Websites",
-            "Resolved Deployment Issues",
-            "Organized Mandatory Course Registrations"
+            "Department 3rd Rank (2nd & 3rd Semester)",
+            "Class Representative (2 Years)",
+            "Top 50 Team – Smart India Hackathon",
+            "VelIdeaforge 2K26 Shortlisted (52/90 teams)",
+            "Participated – Kreative Genesis Hackathon",
+            "Participated – PSG Tech Kriya Ideathon"
           ].map((a, i) => (
-            <div key={i} className="achievement-card hover-card p-6 bg-white/5 rounded-xl">
+            <div key={i} className="achievement-card motion-card p-6 bg-white/5 backdrop-blur-md rounded-xl flex items-center shadow-lg">
               {a}
             </div>
           ))}
@@ -300,29 +400,27 @@ const About = () => {
 
       {/* VISION */}
       <div className="vision-section max-w-4xl mx-auto mb-24">
-        <h2 className="text-3xl font-bold mb-8 text-text-primary">
+        <h2 className="section-title text-3xl font-bold mb-8 text-text-primary">
           My <span className="text-green">Vision</span>
         </h2>
-        <div className="vision-card p-6 bg-white/5 rounded-xl text-text-primary opacity-80">
-          I aspire to become a full-stack innovator who blends secure backend systems with delightful,
-          animated frontends, while mentoring peers and building technology that balances security,
-          usability, and creativity.
+        <div className="vision-card motion-card p-6 bg-white/5 backdrop-blur-md rounded-xl text-text-primary opacity-90 shadow-lg">
+          My aim is to become an AI-driven full-stack developer who builds intelligent, scalable systems that combine machine learning with real-world applications. My focus is on creating solutions that are not only technically powerful but also intuitive and user-centric.
         </div>
       </div>
 
       {/* FUTURE GOALS */}
       <div className="vision-section max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-8 text-text-primary">
+        <h2 className="section-title text-3xl font-bold mb-8 text-text-primary">
           Future <span className="text-orange">Goals</span>
         </h2>
         <div className="grid md:grid-cols-2 gap-6">
           {[
-            "Master scalable backend architectures and cloud-native systems",
-            "Build production-grade animated frontends with React, GSAP & Three.js",
-            "Contribute to impactful open-source projects",
-            "Mentor juniors and grow into a technical leader"
+            "Master AI + scalable backend architectures",
+            "Build production-grade ML-powered applications",
+            "Contribute to open-source AI tools",
+            "Grow into a technical leader and mentor"
           ].map((goal, i) => (
-            <div key={i} className="goal-card hover-card p-6 bg-white/5 rounded-xl">
+            <div key={i} className="goal-card motion-card p-6 bg-white/5 backdrop-blur-md rounded-xl flex items-center shadow-lg">
               {goal}
             </div>
           ))}

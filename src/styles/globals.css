@@ -230,5 +230,42 @@ input:-webkit-autofill:active {
 .achievement-card,
 .goal-card {
     transform-style: preserve-3d;
-    will-change: transform;
+    will-change: transform, box-shadow;
+}
+
+.fun-fact-card {
+    border: 1px solid transparent;
+    transition: border-color 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+/* Light theme */
+html:not([data-theme="dark"]):not(.dark) .fun-fact-card.active,
+html[data-theme="light"] .fun-fact-card.active {
+    border-color: #000;
+}
+
+/* Dark theme */
+html.dark .fun-fact-card.active,
+html[data-theme="dark"] .fun-fact-card.active {
+    border-color: #fff;
+}
+
+/* ================= MOTION PREMIUM UPGRADE ================= */
+.motion-card {
+  transition: border 0.3s ease;
+  border: 1px solid transparent;
+  will-change: transform, box-shadow;
+}
+
+/* Light */
+html:not(.dark):not([data-theme="dark"]) .motion-card:hover,
+html[data-theme="light"] .motion-card:hover {
+  border-color: black;
+}
+
+/* Dark */
+html.dark .motion-card:hover,
+html[data-theme="dark"] .motion-card:hover {
+  border-color: white;
 }
