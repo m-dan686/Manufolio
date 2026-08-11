@@ -1,0 +1,110 @@
+/* ============================================================
+   MANUFOLIO — AUTHORITATIVE DESIGN TOKENS
+   Strict Green (#1F9D55) + Orange (#FF7A00) Palette
+   ============================================================ */
+
+:root {
+  /* ── Authoritative Brand Accent Colors ── */
+  --green: #1F9D55;
+  --orange: #FF7A00;
+
+  --green-rgb: 31, 157, 85;
+  --orange-rgb: 255, 122, 0;
+
+  --green-soft: rgba(31, 157, 85, 0.08);
+  --green-medium: rgba(31, 157, 85, 0.16);
+  --orange-soft: rgba(255, 122, 0, 0.08);
+  --orange-medium: rgba(255, 122, 0, 0.16);
+
+  /* ── High-Contrast Neutrals ── */
+  --bg-light: #FAFAF7;
+  --bg-dark: #0B0C10;
+
+  --surface-light: #FFFFFF;
+  --surface-dark: #111318;
+
+  --text-light: #101411;
+  --text-dark: #F5F5F2;
+
+  --muted-light: #66706A;
+  --muted-dark: #A8AEA9;
+
+  --border-light: rgba(16, 20, 17, 0.12);
+  --border-dark: rgba(255, 255, 255, 0.12);
+
+  --shadow-light: 0 12px 35px rgba(0, 0, 0, 0.08);
+  --shadow-dark: 0 12px 35px rgba(0, 0, 0, 0.30);
+
+  /* ── Active Semantic Mappings (Default Dark mode preference) ── */
+  --bg-primary: var(--bg-dark);
+  --bg-secondary: var(--surface-dark);
+  --card-bg: var(--surface-dark);
+
+  --text-primary: var(--text-dark);
+  --text-secondary: var(--muted-dark);
+  --text-muted: #64748b;
+
+  --card-border: var(--border-dark);
+  --border-neutral: var(--border-dark);
+
+  --shadow-soft: var(--shadow-dark);
+  --shadow-medium: var(--shadow-dark);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --shadow-lift: 0 14px 35px rgba(0, 0, 0, 0.45);
+
+  /* ── Input ── */
+  --input-bg: transparent;
+  --input-border: var(--border-dark);
+  --input-focus: var(--green);
+
+  /* ── Radius ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* ── Logo ── */
+  --logo-bg: var(--bg-dark);
+  --logo-border: rgba(31, 157, 85, 0.2);
+  --logo-text: var(--green);
+}
+
+/* ── Light Mode Override ── */
+:root[data-theme="light"],
+:root.light {
+  --bg-primary: var(--bg-light);
+  --bg-secondary: var(--surface-light);
+  --card-bg: var(--surface-light);
+
+  --text-primary: var(--text-light);
+  --text-secondary: var(--muted-light);
+  --text-muted: #94a3b8;
+
+  --card-border: var(--border-light);
+  --border-neutral: var(--border-light);
+
+  --shadow-soft: var(--shadow-light);
+  --shadow-medium: var(--shadow-light);
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --shadow-lift: 0 12px 30px rgba(0, 0, 0, 0.12);
+
+  --input-border: var(--border-light);
+
+  --logo-bg: var(--bg-light);
+  --logo-border: rgba(31, 157, 85, 0.25);
+}
+
+/* ── Dark Mode Explicit ── */
+:root[data-theme="dark"],
+:root.dark {
+  --bg-primary: var(--bg-dark);
+  --bg-secondary: var(--surface-dark);
+  --card-bg: var(--surface-dark);
+
+  --text-primary: var(--text-dark);
+  --text-secondary: var(--muted-dark);
+
+  --card-border: var(--border-dark);
+  --border-neutral: var(--border-dark);
+}

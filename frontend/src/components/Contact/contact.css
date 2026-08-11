@@ -1,0 +1,212 @@
+/* ============================================================
+   CONTACT — SOLID PREMIUM DESIGN
+   Clean section layout with branded Green/Orange borders
+   ============================================================ */
+
+.contact-section {
+  padding: 5rem 1.5rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.contact-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  max-width: 1050px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .contact-wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Left Side ── */
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.contact-left h2 {
+  color: var(--text-primary);
+}
+
+.contact-left h3 {
+  color: var(--text-primary);
+}
+
+.contact-left .orange { color: var(--orange); }
+.contact-left .green { color: var(--green); }
+
+.contact-left .subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* ── Contact Info Card with Branded Border ── */
+.info-card {
+  background: var(--card-bg);
+  border: 2px solid var(--green);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.info-card:hover {
+  border-color: var(--orange);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.info-item .icon {
+  font-size: 1.35rem;
+}
+
+.info-item small {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.contact-link {
+  color: var(--green);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+  color: var(--orange);
+}
+
+/* ── Right Side (Form Card) ── */
+.contact-right {
+  background: var(--card-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.35s ease;
+}
+
+.contact-right:hover {
+  border-color: var(--green);
+}
+
+.field-group {
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.contact-right input,
+.contact-right textarea {
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.input-error {
+  border-color: #e53e3e !important;
+}
+
+.error-msg {
+  display: block;
+  font-size: 0.75rem;
+  color: #e53e3e;
+  margin-top: 0.35rem;
+  font-weight: 500;
+}
+
+.submit-error {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.contact-right button[type="submit"] {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+  background: var(--green);
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.contact-right button[type="submit"]:hover {
+  background: var(--orange);
+  transform: translateY(-1px);
+}
+
+.contact-right button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Success State ── */
+.success {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.check {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto 1rem;
+}
+
+.success-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.success-sub {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.send-another-btn {
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 2px solid var(--orange);
+  color: var(--orange);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.send-another-btn:hover {
+  background: var(--orange);
+  color: white;
+}

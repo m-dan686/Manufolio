@@ -1,0 +1,122 @@
+/* ============================================================
+   PROJECTS — SOLID DESIGN (NO NEON)
+   ============================================================ */
+
+.projects-section {
+  background: var(--bg-primary);
+  min-height: 100vh;
+  transition: background-color 0.4s ease;
+}
+
+.projects-title {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ═══ PPT MODAL ═══ */
+.ppt-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ppt-modal {
+  position: relative;
+  width: min(90vw, 85vh * 16 / 9);
+  height: min(85vh, 90vw * 9 / 16);
+  background: #000;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-medium);
+  border: 1px solid var(--border-neutral);
+  user-select: none;
+}
+
+.ppt-modal iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+}
+
+.ppt-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 36px;
+  height: 36px;
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+
+.ppt-close:hover {
+  transform: scale(1.1);
+}
+
+.ppt-sim {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-secondary);
+  gap: 1rem;
+}
+
+.ppt-sim h2 {
+  color: var(--green);
+  font-size: 1.5rem;
+}
+
+.ppt-sim .view-btn {
+  margin-top: 1rem;
+}
+
+/* Loader */
+.ppt-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 2.5rem;
+  background: #000;
+  border-radius: var(--radius-lg);
+  z-index: 1;
+}
+
+.loader-bar {
+  height: 14px;
+  width: 100%;
+  background: linear-gradient(90deg, #111 25%, #1f1f1f 37%, #111 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}

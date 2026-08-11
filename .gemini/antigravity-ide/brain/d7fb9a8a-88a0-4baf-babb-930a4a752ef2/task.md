@@ -1,0 +1,35 @@
+# Task Checklist - Master Scroll Animation, UI Component & Bold Color System Upgrade
+
+- [x] Audit existing project structure and code files (verify dependencies, GSAP hooks, theme setup)
+- [x] Centralize brand variables and design tokens in CSS files
+  - [x] Update `theme.css` with bold `--green: #1F9D55` and `--orange: #FF7A00` and professional borders/shadows
+  - [x] Update `globals.css` with clean inputs, scrollbars, and mouse spotlight
+- [x] Integrate GradientMenu component
+  - [x] Add `Navbar.jsx` integration with responsive support
+  - [x] Add `Footer.jsx` integration keeping CMS portal link intact
+- [x] Integrate text scroll reveal (Skiper31) and journey pinning in About section
+  - [x] Integrate `Skiper31` component selectively in `About.jsx`
+  - [x] Setup two-column layout in `About.jsx` with GSAP pinning on desktop
+  - [x] Disable pinning on mobile/tablet widths
+- [x] Integrate Interactive Icon Cloud in About section
+  - [x] Update `About.jsx` to render `<IconCloud />` using authentic technology slugs
+  - [x] Verify light/dark background rendering of the cloud
+- [x] Integrate parallax scroll effects inside other pages
+  - [x] Add layered parallax in `Home.jsx` (slow/mid/fast ring movements)
+  - [x] Add internal image parallax inside `ProjectCard.jsx` (yPercent translation)
+  - [x] Replace project card hover neon auras with clean solid borders and lift transforms
+  - [x] Add stagger card reveal on viewport entry inside `Certifications.jsx`
+- [x] Perform build check and resolve regressions
+  - [x] Run production build `npm run build`
+  - [x] Test modal layers compatibility (ProjectModal, CertificateModal, PPTViewer)
+  - [x] Ensure full isolation and functionality of `/admin` CMS routes
+- [x] Integrate and verify Motion Primitives components
+  - [x] Add `AnimatedBackground` (used in Hero CTAs and mobile navigation transitions)
+  - [x] Add `BorderTrail` (active on Superpowers, Achievements, and Future Goal card outlines)
+  - [x] Add `Carousel` (Spotlight showcase slider inside Projects page)
+  - [x] Add `Cursor` (custom pointer tracking bubble on desktop)
+  - [x] Add `InfiniteSlider` (horizontal scrolling tech stack strip on Home/About border)
+  - [x] Add `TextEffect` (letter-reveal header animation in Home Hero)
+  - [x] Add `TextRoll` (rolling wave headers across all sections)
+  - [x] Add `ImageComparison` (TwinScape design vs implementation sliding widget)
+- [x] Generate walkthrough `walkthrough.md` and write final report

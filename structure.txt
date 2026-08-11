@@ -1,150 +1,193 @@
-└── Manufolio
-    ├── .gitignore
-    ├── .vscode
-    │   └── settings.json
-    ├── index.html
-    ├── manufolio-backend
-    │   ├── config
-    │   │   └── db.js
-    │   ├── controllers
-    │   │   ├── analyticsController.js
-    │   │   ├── authController.js
-    │   │   ├── contactController.js
-    │   │   ├── projectController.js
-    │   │   └── resumeController.js
-    │   ├── createAdmin.js
-    │   ├── middleware
-    │   │   ├── authMiddleware.js
-    │   │   └── uploadMiddleware.js
-    │   ├── package-lock.json
-    │   ├── package.json
-    │   ├── routes
-    │   │   ├── analyticsRoutes.js
-    │   │   ├── authRoutes.js
-    │   │   ├── contactRoutes.js
-    │   │   ├── projectRoutes.js
-    │   │   └── resumeRoutes.js
-    │   ├── schema.sql
-    │   ├── server.js
-    │   └── uploads
-    ├── package-lock.json
-    ├── package.json
-    ├── postcss.config.js
-    ├── public
-    │   ├── favicon.png
-    │   └── files
-    │       ├── .gitkeep
-    │       ├── academics
-    │       │   ├── college
-    │       │   │   ├── sem1-marksheet.pdf
-    │       │   │   ├── sem2-marksheet.pdf
-    │       │   │   └── sem3-marksheet.pdf
-    │       │   ├── resume
-    │       │   │   └── resume.pdf
-    │       │   └── school
-    │       │       ├── 10th-marksheet.pdf
-    │       │       ├── 11th-marksheet.pdf
-    │       │       └── 12th-marksheet.pdf
-    │       ├── certificates
-    │       │   ├── images
-    │       │   │   ├── ComputerArchitectureDigitalComponents.jpg
-    │       │   │   ├── Crash Course On Python_page-0001.jpg
-    │       │   │   ├── Discrete Mathematics Part 1.jpg
-    │       │   │   ├── Fundamentals Of Python.jpg
-    │       │   │   ├── Infosys Java_page-0001.jpg
-    │       │   │   ├── Introduction to Artificial Intelligence Infosys_page-0001.jpg
-    │       │   │   ├── Java Programming_page-0001.jpg
-    │       │   │   ├── Multi-Paradigm Programming with Modern C++_page-0001.jpg
-    │       │   │   ├── Object Oriented Design_page-0001.jpg
-    │       │   │   ├── Operational Research_page-0001.jpg
-    │       │   │   ├── Programming, Data Structures and Algorithms using Python_page-0001.jpg
-    │       │   │   └── Soft Skill Development_page-0001.jpg
-    │       │   └── pdf
-    │       │       ├── ComputerArchitectureDigitalComponents.pdf
-    │       │       ├── Crash Course On Python.pdf
-    │       │       ├── Discrete Mathematics Part 1.pdf
-    │       │       ├── Fundamentals Of Python.pdf
-    │       │       ├── Infosys Java.pdf
-    │       │       ├── Introduction to Artificial Intelligence Infosys.pdf
-    │       │       ├── Java Programming.pdf
-    │       │       ├── Multi-Paradigm Programming with Modern C++.pdf
-    │       │       ├── Object Oriented Design.pdf
-    │       │       ├── Operational Research.pdf
-    │       │       ├── Programming, Data Structures and Algorithms using Python.pdf
-    │       │       └── Soft Skill Development.pdf
-    │       ├── Manu Anandan G - Resume.pdf
-    │       ├── portfolio_images
-    │       │   ├── agrisafe.jpeg
-    │       │   ├── AI CHT.jpeg
-    │       │   ├── ai_transperancy.jpg
-    │       │   ├── DTA VIS.jpeg
-    │       │   ├── E COM.jpeg
-    │       │   ├── medcare.png
-    │       │   ├── photo.jpeg
-    │       │   ├── photo.jpg
-    │       │   ├── PRT GEN.jpeg
-    │       │   ├── SAHAY.jpeg
-    │       │   ├── skillmatch.jpeg
-    │       │   ├── twinscape.jpeg
-    │       │   └── warranty.png
-    │       └── projects
-    │           ├── agrisafe-box.pptx
-    │           ├── digital-warranty-tracker.pptx
-    │           ├── sahay.pptx
-    │           └── twinscape.pptx
-    ├── README.md
-    ├── src
-    │   ├── App.jsx
-    │   ├── components
-    │   │   ├── animations
-    │   │   │   ├── CursorFollower.jsx
-    │   │   │   ├── PageLoader.jsx
-    │   │   │   ├── PageTransition.jsx
-    │   │   │   └── ParticleBackground.jsx
-    │   │   ├── Contact
-    │   │   │   ├── contact.css
-    │   │   │   └── Contact.jsx
-    │   │   ├── footer
-    │   │   │   └── Footer.jsx
-    │   │   ├── modals
-    │   │   │   ├── CertificateModal.jsx
-    │   │   │   └── ProjectModal.jsx
-    │   │   ├── navbar
-    │   │   │   ├── ManufolioLogo.jsx
-    │   │   │   ├── Navbar.jsx
-    │   │   │   ├── themeToggle.css
-    │   │   │   └── ThemeToggle.jsx
-    │   │   ├── PPTViewer.jsx
-    │   │   ├── ProjectCard.jsx
-    │   │   └── utils
-    │   │       ├── PageWrapper.jsx
-    │   │       └── ScrollToTop.jsx
-    │   ├── context
-    │   │   └── ThemeContext.jsx
-    │   ├── data
-    │   │   ├── certificatesData.js
-    │   │   └── projectsData.js
-    │   ├── main.jsx
-    │   ├── pages
-    │   │   ├── About.jsx
-    │   │   ├── admin
-    │   │   │   ├── AdminDashboard.jsx
-    │   │   │   ├── AdminLayout.jsx
-    │   │   │   └── AdminLogin.jsx
-    │   │   ├── Certifications.jsx
-    │   │   ├── ContactPage.jsx
-    │   │   ├── Downloads.jsx
-    │   │   ├── Home.jsx
-    │   │   └── Projects.jsx
-    │   ├── router.jsx
-    │   ├── styles
-    │   │   ├── animations.css
-    │   │   ├── globals.css
-    │   │   ├── projects.css
-    │   │   └── theme.css
-    │   └── utils
-    │       ├── animations.gsap.js
-    │       └── motionPresets.js
-    ├── tailwind.config.js
-    ├── vercel.json
-    └── vite.config.js
+Manufolio
+├── .github
+│   └── modernize
+│       └── java-upgrade
+├── .gitignore
+├── .vscode
+│   └── settings.json
+├── README.md
+├── structure.txt
+│
+├── frontend
+│   ├── .env
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── public
+│   │   ├── favicon.png
+│   │   └── files
+│   │       ├── Manu Anandan G - Resume.pdf
+│   │       ├── academics
+│   │       │   ├── college
+│   │       │   │   ├── sem1-marksheet.pdf
+│   │       │   │   ├── sem2-marksheet.pdf
+│   │       │   │   └── sem3-marksheet.pdf
+│   │       │   └── school
+│   │       │       ├── 10th-marksheet.pdf
+│   │       │       ├── 11th-marksheet.pdf
+│   │       │       └── 12th-marksheet.pdf
+│   │       ├── certificates
+│   │       │   ├── images
+│   │       │   │   ├── ComputerArchitectureDigitalComponents.jpg
+│   │       │   │   ├── Crash Course On Python_page-0001.jpg
+│   │       │   │   ├── Discrete Mathematics Part 1.jpg
+│   │       │   │   ├── Fundamentals Of Python.jpg
+│   │       │   │   ├── Infosys Java_page-0001.jpg
+│   │       │   │   ├── Introduction to Artificial Intelligence Infosys_page-0001.jpg
+│   │       │   │   ├── Java Programming_page-0001.jpg
+│   │       │   │   ├── Multi-Paradigm Programming with Modern C++_page-0001.jpg
+│   │       │   │   ├── Object Oriented Design_page-0001.jpg
+│   │       │   │   ├── Operational Research_page-0001.jpg
+│   │       │   │   ├── Programming, Data Structures and Algorithms using Python_page-0001.jpg
+│   │       │   │   └── Soft Skill Development_page-0001.jpg
+│   │       │   └── pdf
+│   │       │       ├── ComputerArchitectureDigitalComponents.pdf
+│   │       │       ├── Crash Course On Python.pdf
+│   │       │       ├── Discrete Mathematics Part 1.pdf
+│   │       │       ├── Fundamentals Of Python.pdf
+│   │       │       ├── Infosys Java.pdf
+│   │       │       ├── Introduction to Artificial Intelligence Infosys.pdf
+│   │       │       ├── Java Programming.pdf
+│   │       │       ├── Multi-Paradigm Programming with Modern C++.pdf
+│   │       │       ├── Object Oriented Design.pdf
+│   │       │       ├── Operational Research.pdf
+│   │       │       ├── Programming, Data Structures and Algorithms using Python.pdf
+│   │       │       └── Soft Skill Development.pdf
+│   │       ├── portfolio_images
+│   │       │   ├── agrisafe.jpeg
+│   │       │   ├── AI CHT.jpeg
+│   │       │   ├── ai_transperancy.jpg
+│   │       │   ├── DTA VIS.jpeg
+│   │       │   ├── E COM.jpeg
+│   │       │   ├── medcare.png
+│   │       │   ├── photo.jpeg
+│   │       │   ├── photo.jpg
+│   │       │   ├── PRT GEN.jpeg
+│   │       │   ├── SAHAY.jpeg
+│   │       │   ├── skillmatch.jpeg
+│   │       │   ├── twinscape.jpeg
+│   │       │   └── warranty.png
+│   │       └── projects
+│   │           ├── agrisafe-box.pptx
+│   │           ├── digital-warranty-tracker.pptx
+│   │           ├── sahay.pptx
+│   │           └── twinscape.pptx
+│   ├── tailwind.config.js
+│   ├── vercel.json
+│   ├── vite.config.js
+│   └── src
+│       ├── App.jsx
+│       ├── main.jsx
+│       ├── router.jsx
+│       ├── components
+│       │   ├── Contact
+│       │   │   ├── contact.css
+│       │   │   └── Contact.jsx
+│       │   ├── footer
+│       │   │   └── Footer.jsx
+│       │   ├── modals
+│       │   │   ├── CertificateModal.jsx
+│       │   │   └── ProjectModal.jsx
+│       │   ├── navbar
+│       │   │   ├── ManufolioLogo.jsx
+│       │   │   ├── Navbar.jsx
+│       │   │   ├── themeToggle.css
+│       │   │   └── ThemeToggle.jsx
+│       │   ├── animations
+│       │   │   ├── CursorFollower.jsx
+│       │   │   ├── PageLoader.jsx
+│       │   │   ├── PageTransition.jsx
+│       │   │   └── ParticleBackground.jsx
+│       │   ├── PPTViewer.jsx
+│       │   ├── ProjectCard.jsx
+│       │   └── utils
+│       │       ├── PageWrapper.jsx
+│       │       └── ScrollToTop.jsx
+│       ├── context
+│       │   └── ThemeContext.jsx
+│       ├── data
+│       │   ├── certificatesData.js
+│       │   └── projectsData.js
+│       ├── pages
+│       │   ├── About.jsx
+│       │   ├── Certifications.jsx
+│       │   ├── ContactPage.jsx
+│       │   ├── Downloads.jsx
+│       │   ├── Home.jsx
+│       │   ├── Projects.jsx
+│       │   └── admin
+│       │       ├── AdminDashboard.jsx
+│       │       ├── AdminLayout.jsx
+│       │       └── AdminLogin.jsx
+│       ├── styles
+│       │   ├── animations.css
+│       │   ├── globals.css
+│       │   ├── projects.css
+│       │   └── theme.css
+│       └── utils
+│           ├── animations.gsap.js
+│           └── motionPresets.js
+│
+└── backend
+    ├── pom.xml
+    └── src
+        ├── main
+        │   ├── java
+        │   │   └── com
+        │   │       └── manufolio
+        │   │           ├── ManufolioApplication.java
+        │   │           ├── config
+        │   │           │   ├── JpaConfig.java
+        │   │           │   ├── SecurityConfig.java
+        │   │           │   └── WebMvcConfig.java
+        │   │           ├── constants
+        │   │           │   └── AppConstants.java
+        │   │           ├── controller
+        │   │           │   ├── AdminController.java
+        │   │           │   ├── AuthController.java
+        │   │           │   └── ContactController.java
+        │   │           ├── dto
+        │   │           │   ├── ContactDTO.java
+        │   │           │   ├── LoginResponse.java
+        │   │           │   └── StatsDTO.java
+        │   │           ├── entity
+        │   │           │   ├── AdminUser.java
+        │   │           │   └── Contact.java
+        │   │           ├── enums
+        │   │           │   └── UserRole.java
+        │   │           ├── exception
+        │   │           │   ├── GlobalExceptionHandler.java
+        │   │           │   ├── ResourceNotFoundException.java
+        │   │           │   └── UnauthorizedException.java
+        │   │           ├── mapper
+        │   │           │   └── ContactMapper.java
+        │   │           ├── repository
+        │   │           │   ├── AdminUserRepository.java
+        │   │           │   └── ContactRepository.java
+        │   │           ├── request
+        │   │           │   ├── ContactRequest.java
+        │   │           │   ├── LoginRequest.java
+        │   │           │   └── RefreshTokenRequest.java
+        │   │           ├── response
+        │   │           │   └── ApiResponse.java
+        │   │           ├── security
+        │   │           │   ├── JwtAuthFilter.java
+        │   │           │   └── RateLimitingInterceptor.java
+        │   │           ├── service
+        │   │           │   ├── AdminService.java
+        │   │           │   ├── AuthService.java
+        │   │           │   ├── ContactService.java
+        │   │           │   └── impl
+        │   │           │       ├── AdminServiceImpl.java
+        │   │           │       ├── AuthServiceImpl.java
+        │   │           │       └── ContactServiceImpl.java
+        │   │           └── util
+        │   │               └── JwtUtil.java
+        │   └── resources
+        │       └── application.properties
+        └── test
+            └── java
+                └── com
+                    └── manufolio
+                        └── ManufolioApplicationTests.java

@@ -1,0 +1,126 @@
+/* ============================================================
+   MANUFOLIO — AMBIENT BACKGROUND SYSTEM STYLES
+   High-visibility light theme contrast, crisp orbits, pointer-events none
+   ============================================================ */
+
+.manufolio-background {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+.manufolio-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Ambient Blur Orbs (BOOSTED VISIBILITY IN LIGHT MODE) ── */
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.ambient-orb-green {
+  width: 580px;
+  height: 580px;
+  top: 2%;
+  left: -6%;
+  background: rgba(31, 157, 85, 0.16);
+  filter: blur(75px);
+}
+
+.ambient-orb-orange {
+  width: 520px;
+  height: 520px;
+  top: 38%;
+  right: -6%;
+  background: rgba(255, 122, 0, 0.14);
+  filter: blur(75px);
+}
+
+/* ── Dark Mode Ambient Orbs ── */
+:root[data-theme="dark"] .ambient-orb-green,
+:root.dark .ambient-orb-green {
+  background: rgba(31, 157, 85, 0.12);
+  filter: blur(90px);
+}
+
+:root[data-theme="dark"] .ambient-orb-orange,
+:root.dark .ambient-orb-orange {
+  background: rgba(255, 122, 0, 0.10);
+  filter: blur(90px);
+}
+
+/* ── Structural Grid (HIGH VISIBILITY) ── */
+.background-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(31, 157, 85, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 122, 0, 0.05) 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.9;
+}
+
+:root[data-theme="dark"] .background-grid,
+:root.dark .background-grid {
+  background-image:
+    linear-gradient(rgba(31, 157, 85, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 122, 0, 0.04) 1px, transparent 1px);
+  opacity: 0.7;
+}
+
+/* ── Orbits (HIGH VISIBILITY IN BOTH THEMES) ── */
+.background-orbit {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.orbit-green {
+  width: 680px;
+  height: 680px;
+  border: 1.5px dashed rgba(31, 157, 85, 0.24);
+}
+
+.orbit-orange {
+  width: 880px;
+  height: 880px;
+  border: 1.5px solid rgba(255, 122, 0, 0.22);
+}
+
+.orbit-neutral {
+  width: 1100px;
+  height: 1100px;
+  border: 1.5px dashed rgba(160, 160, 160, 0.15);
+}
+
+/* ── Mobile Adjustments ── */
+@media (max-width: 768px) {
+  .ambient-orb-green {
+    width: 340px;
+    height: 340px;
+    filter: blur(55px);
+  }
+  .ambient-orb-orange {
+    width: 300px;
+    height: 300px;
+    filter: blur(55px);
+  }
+  .background-grid {
+    background-size: 50px 50px;
+    opacity: 0.6;
+  }
+  .orbit-green { width: 380px; height: 380px; }
+  .orbit-orange { width: 480px; height: 480px; }
+  .orbit-neutral { display: none; }
+}

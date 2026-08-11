@@ -1,0 +1,193 @@
+/* ============================================================
+   MANUFOLIO — GLOBAL STYLES
+   No neon. No glow. Solid premium design.
+   ============================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'DM Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, .font-display {
+  font-family: 'Bricolage Grotesque', 'DM Sans', sans-serif;
+}
+
+code, pre, .font-mono, .tech-metadata, .section-number {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--green); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+
+/* ── Selection ── */
+::selection {
+  background: rgba(var(--green-rgb), 0.2);
+  color: var(--text-primary);
+}
+
+/* ── Inputs ── */
+input,
+textarea,
+select {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1.5px solid var(--input-border) !important;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--green) !important;
+  box-shadow: 0 0 0 3px rgba(var(--green-rgb), 0.1) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-primary) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ── Scroll Progress Bar ── */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--green), var(--orange));
+  z-index: 9999;
+  transform-origin: left;
+  will-change: transform;
+}
+
+/* ── Card Surfaces ── */
+.vault-card,
+.motion-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  will-change: transform;
+}
+
+.vault-card:hover,
+.motion-card:hover {
+  border-color: var(--green);
+  box-shadow: var(--shadow-lift);
+}
+
+/* ── Fun Fact Cards ── */
+.fun-fact-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.fun-fact-card:hover,
+.fun-fact-card.active {
+  border-color: var(--orange);
+  box-shadow: var(--shadow-lift);
+}
+
+/* ── Logo ── */
+.ma-logo-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+}
+
+/* ── Background Layers ── */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.04;
+}
+
+.bg-shape-green {
+  background: var(--green);
+}
+
+.bg-shape-orange {
+  background: var(--orange);
+}
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border-neutral) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-neutral) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.3;
+}
+
+/* ── Parallax ── */
+.parallax {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.parallax-layer {
+  pointer-events: none;
+}
+
+/* ── Achievement/Goal Cards ── */
+.achievement-card,
+.goal-card {
+  will-change: transform;
+}
+
+/* ── Focus ── */
+*:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
