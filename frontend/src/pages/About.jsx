@@ -87,10 +87,14 @@ const leadershipData = [
     role: "Class Representative",
     organization: "Sri Krishna College of Technology",
     period: "2 Years Service",
-    badge: "Student Representative",
+    badge: "Student Leadership",
+    image: import.meta.env.BASE_URL + "files/portfolio_images/class_representative.jpg",
+    quote: "Bridging communication between students and faculty while driving academic coordination.",
+    tagline: "Leadership in Action. Academic Excellence. 🎓",
     points: [
       "Facilitated transparent and proactive communication between students, department heads, and faculty members.",
-      "Supported administrative coordination for academic timetables, lab schedules, and class-wide activities."
+      "Supported administrative coordination for academic timetables, lab schedules, and class-wide activities.",
+      "Represented class interests during department meetings and led student welfare initiatives."
     ]
   }
 ];
@@ -471,15 +475,15 @@ const About = () => {
                 className="leadership-card w-full p-6 md:p-8 rounded-3xl shadow-xl transition-all duration-300 relative overflow-hidden"
                 style={{
                   backgroundColor: 'var(--card-bg)',
-                  border: lead.image ? '2px solid var(--orange)' : '1.5.px solid var(--card-border)'
+                  border: lead.image ? (idx === 0 ? '2px solid var(--orange)' : '2px solid var(--green)') : '1.5px solid var(--card-border)'
                 }}
               >
-                {lead.image && <BorderTrail color="var(--orange)" duration={6} />}
+                {lead.image && <BorderTrail color={idx === 0 ? "var(--orange)" : "var(--green)"} duration={6} />}
 
-                {/* If the item has a poster image, arrange poster and details in a balanced 2-column grid row */}
+                {/* If the item has an image, arrange poster/photo and details in a balanced 2-column grid row */}
                 {lead.image ? (
                   <div className="grid md:grid-cols-12 gap-8 items-center">
-                    {/* Left Column: Poster Image Preview */}
+                    {/* Left Column: Image Preview */}
                     <div className="md:col-span-5">
                       <div
                         className="rounded-2xl overflow-hidden relative group cursor-pointer border shadow-lg bg-black/40"
@@ -493,11 +497,12 @@ const About = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity flex flex-col justify-end p-4">
                           <div className="flex justify-between items-center">
-                            <span className="text-[0.7rem] font-mono font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">
-                              <FiMaximize2 /> Expand Poster
+                            <span className="text-[0.7rem] font-mono font-bold uppercase tracking-widest flex items-center gap-1"
+                                  style={{ color: idx === 0 ? 'var(--orange)' : 'var(--green)' }}>
+                              <FiMaximize2 /> Expand Image
                             </span>
                             <span className="text-[0.65rem] font-mono text-white/80 bg-white/15 px-2 py-0.5 rounded">
-                              Appointment Poster
+                              {lead.badge || "Role Image"}
                             </span>
                           </div>
                         </div>
@@ -508,12 +513,19 @@ const About = () => {
                     <div className="md:col-span-7 space-y-4">
                       <div className="flex flex-wrap justify-between items-center gap-2">
                         <span className="text-xs font-mono font-bold px-3 py-1 rounded uppercase tracking-wider"
-                              style={{ backgroundColor: 'var(--orange-soft)', color: 'var(--orange)' }}>
+                              style={{
+                                backgroundColor: idx === 0 ? 'var(--orange-soft)' : 'var(--green-soft)',
+                                color: idx === 0 ? 'var(--orange)' : 'var(--green)'
+                              }}>
                           {lead.period}
                         </span>
                         {lead.badge && (
                           <span className="text-[0.7rem] font-mono font-bold uppercase px-3 py-1 rounded flex items-center gap-1.5"
-                                style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)', border: '1px solid rgba(var(--green-rgb), 0.2)' }}>
+                                style={{
+                                  backgroundColor: idx === 0 ? 'var(--green-soft)' : 'rgba(var(--green-rgb), 0.12)',
+                                  color: 'var(--green)',
+                                  border: '1px solid rgba(var(--green-rgb), 0.2)'
+                                }}>
                             <FiAward className="text-xs" /> {lead.badge}
                           </span>
                         )}
@@ -530,7 +542,11 @@ const About = () => {
 
                       {lead.quote && (
                         <blockquote className="p-4 rounded-xl italic text-xs md:text-sm font-semibold border-l-4 leading-relaxed"
-                                    style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--orange)', color: 'var(--text-primary)' }}>
+                                    style={{
+                                      backgroundColor: 'var(--bg-secondary)',
+                                      borderColor: idx === 0 ? 'var(--orange)' : 'var(--green)',
+                                      color: 'var(--text-primary)'
+                                    }}>
                           "{lead.quote}"
                         </blockquote>
                       )}
@@ -543,7 +559,10 @@ const About = () => {
 
                       {lead.tagline && (
                         <div className="pt-3 border-t text-xs font-mono font-bold flex items-center gap-2"
-                             style={{ borderColor: 'var(--border-neutral)', color: 'var(--orange)' }}>
+                             style={{
+                               borderColor: 'var(--border-neutral)',
+                               color: idx === 0 ? 'var(--orange)' : 'var(--green)'
+                             }}>
                           {lead.tagline}
                         </div>
                       )}
@@ -625,7 +644,7 @@ const About = () => {
 
       </div>
 
-      {/* Official Appointment Poster Full Modal */}
+      {/* Official Appointment / Role Image Full Modal */}
       <AnimatePresence>
         {selectedPoster && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
@@ -636,7 +655,7 @@ const About = () => {
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-xl w-full bg-[#0b0b0b] border-2 border-orange-500/40 rounded-3xl overflow-hidden shadow-2xl p-4"
+              className="relative max-w-2xl w-full bg-[#0b0b0b] border-2 border-orange-500/40 rounded-3xl overflow-hidden shadow-2xl p-4"
             >
               <button
                 onClick={() => setSelectedPoster(null)}
@@ -657,7 +676,7 @@ const About = () => {
               <div className="mt-4 text-center space-y-1">
                 <h4 className="text-lg font-bold text-white">{selectedPoster.role}</h4>
                 <p className="text-xs font-mono text-orange-400">{selectedPoster.organization}</p>
-                <p className="text-xs text-white/60 italic pt-1">"{selectedPoster.quote}"</p>
+                {selectedPoster.quote && <p className="text-xs text-white/60 italic pt-1">"{selectedPoster.quote}"</p>}
               </div>
             </motion.div>
           </div>
