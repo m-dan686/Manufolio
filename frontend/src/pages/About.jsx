@@ -70,26 +70,27 @@ const achievementsData = [
 
 const leadershipData = [
   {
-    role: "Class Representative",
-    organization: "Sri Krishna College of Technology",
-    period: "2 Years",
-    points: [
-      "Facilitated communication between students and faculty.",
-      "Supported coordination of academic and class-related activities."
-    ]
-  },
-  {
     role: "IGNITE Tech Community — Secretary",
     organization: "Sri Krishna College of Technology",
-    period: "Active",
+    period: "Active Role",
     badge: "Official Office Bearer",
     image: import.meta.env.BASE_URL + "files/portfolio_images/ignite_secretary.jpg",
     quote: "Organizing today with dedication, uniting tomorrow for a greater impact.",
     tagline: "Ignite Ideas. Build Solutions. Create Impact. 🔥",
     points: [
-      "Coordinate and organize technical events, meetings, and activities.",
-      "Maintain proper communication and documentation within the community.",
-      "Coordinate team members and follow up on tasks to ensure on-time execution."
+      "Coordinate and organize technical events, meetings, workshops, and community activities.",
+      "Maintain proper communication, scheduling, and official documentation within the technical club.",
+      "Lead cross-functional student teams and follow up on task milestones to ensure seamless event execution."
+    ]
+  },
+  {
+    role: "Class Representative",
+    organization: "Sri Krishna College of Technology",
+    period: "2 Years Service",
+    badge: "Student Representative",
+    points: [
+      "Facilitated transparent and proactive communication between students, department heads, and faculty members.",
+      "Supported administrative coordination for academic timetables, lab schedules, and class-wide activities."
     ]
   }
 ];
@@ -451,7 +452,7 @@ const About = () => {
         </div>
 
         {/* ═══════════════════════════════
-            LEADERSHIP & RESPONSIBILITIES
+            LEADERSHIP & RESPONSIBILITIES (ROW-BASED STACKED LAYOUT)
         ═══════════════════════════════ */}
         <div className="leadership-section mb-24 max-w-5xl mx-auto">
           <div className="mb-10">
@@ -462,77 +463,122 @@ const About = () => {
             <TextReveal text="Leadership & Responsibilities" as="h2" className="text-3xl md:text-4xl font-extrabold mt-2" style={{ color: 'var(--text-primary)' }} />
           </div>
 
-          <div className="grid lg:grid-cols-12 gap-8 items-start">
+          {/* Stacked Full-Width Rows */}
+          <div className="flex flex-col gap-8">
             {leadershipData.map((lead, idx) => (
               <div
                 key={idx}
-                className={`leadership-card p-6 md:p-8 rounded-3xl shadow-xl transition-all duration-300 relative overflow-hidden ${
-                  lead.image ? "lg:col-span-7" : "lg:col-span-5"
-                }`}
-                style={{ backgroundColor: 'var(--card-bg)', border: lead.image ? '2px solid var(--orange)' : '1.5px solid var(--card-border)' }}
+                className="leadership-card w-full p-6 md:p-8 rounded-3xl shadow-xl transition-all duration-300 relative overflow-hidden"
+                style={{
+                  backgroundColor: 'var(--card-bg)',
+                  border: lead.image ? '2px solid var(--orange)' : '1.5.px solid var(--card-border)'
+                }}
               >
                 {lead.image && <BorderTrail color="var(--orange)" duration={6} />}
 
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-xs font-mono font-bold px-2.5 py-1 rounded uppercase tracking-wider"
-                        style={{ backgroundColor: lead.image ? 'var(--orange-soft)' : 'rgba(var(--green-rgb), 0.12)', color: lead.image ? 'var(--orange)' : 'var(--green)' }}>
-                    {lead.period}
-                  </span>
-                  {lead.badge && (
-                    <span className="text-[0.65rem] font-mono font-bold uppercase px-2.5 py-0.5 rounded flex items-center gap-1"
-                          style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)' }}>
-                      <FiAward className="text-xs" /> {lead.badge}
-                    </span>
-                  )}
-                </div>
-
-                <h3 className="text-xl md:text-2xl font-extrabold mb-1" style={{ color: 'var(--text-primary)' }}>
-                  {lead.role}
-                </h3>
-                <p className="text-xs font-mono font-semibold mb-4" style={{ color: 'var(--text-muted)' }}>
-                  {lead.organization}
-                </p>
-
-                {/* Poster Image Highlight for IGNITE Secretary Role */}
-                {lead.image && (
-                  <div className="mb-6 rounded-2xl overflow-hidden relative group cursor-pointer border shadow-lg"
-                       onClick={() => setSelectedPoster(lead)}
-                       style={{ borderColor: 'var(--card-border)' }}>
-                    <img
-                      src={lead.image}
-                      alt={lead.role}
-                      className="w-full h-auto max-h-[360px] object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity flex flex-col justify-end p-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[0.7rem] font-mono font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">
-                          <FiMaximize2 /> Tap to Expand Poster
-                        </span>
-                        <span className="text-[0.65rem] font-mono text-white/70 bg-white/10 px-2 py-0.5 rounded">
-                          Official Appointment Poster
-                        </span>
+                {/* If the item has a poster image, arrange poster and details in a balanced 2-column grid row */}
+                {lead.image ? (
+                  <div className="grid md:grid-cols-12 gap-8 items-center">
+                    {/* Left Column: Poster Image Preview */}
+                    <div className="md:col-span-5">
+                      <div
+                        className="rounded-2xl overflow-hidden relative group cursor-pointer border shadow-lg bg-black/40"
+                        onClick={() => setSelectedPoster(lead)}
+                        style={{ borderColor: 'var(--card-border)' }}
+                      >
+                        <img
+                          src={lead.image}
+                          alt={lead.role}
+                          className="w-full h-auto max-h-[380px] object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity flex flex-col justify-end p-4">
+                          <div className="flex justify-between items-center">
+                            <span className="text-[0.7rem] font-mono font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">
+                              <FiMaximize2 /> Expand Poster
+                            </span>
+                            <span className="text-[0.65rem] font-mono text-white/80 bg-white/15 px-2 py-0.5 rounded">
+                              Appointment Poster
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    {/* Right Column: Role Details */}
+                    <div className="md:col-span-7 space-y-4">
+                      <div className="flex flex-wrap justify-between items-center gap-2">
+                        <span className="text-xs font-mono font-bold px-3 py-1 rounded uppercase tracking-wider"
+                              style={{ backgroundColor: 'var(--orange-soft)', color: 'var(--orange)' }}>
+                          {lead.period}
+                        </span>
+                        {lead.badge && (
+                          <span className="text-[0.7rem] font-mono font-bold uppercase px-3 py-1 rounded flex items-center gap-1.5"
+                                style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)', border: '1px solid rgba(var(--green-rgb), 0.2)' }}>
+                            <FiAward className="text-xs" /> {lead.badge}
+                          </span>
+                        )}
+                      </div>
+
+                      <div>
+                        <h3 className="text-2xl md:text-3xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
+                          {lead.role}
+                        </h3>
+                        <p className="text-xs md:text-sm font-mono font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
+                          {lead.organization}
+                        </p>
+                      </div>
+
+                      {lead.quote && (
+                        <blockquote className="p-4 rounded-xl italic text-xs md:text-sm font-semibold border-l-4 leading-relaxed"
+                                    style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--orange)', color: 'var(--text-primary)' }}>
+                          "{lead.quote}"
+                        </blockquote>
+                      )}
+
+                      <ul className="space-y-2.5 pl-4 list-disc text-xs md:text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                        {lead.points.map((pt, i) => (
+                          <li key={i}>{pt}</li>
+                        ))}
+                      </ul>
+
+                      {lead.tagline && (
+                        <div className="pt-3 border-t text-xs font-mono font-bold flex items-center gap-2"
+                             style={{ borderColor: 'var(--border-neutral)', color: 'var(--orange)' }}>
+                          {lead.tagline}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
+                ) : (
+                  /* Standard Full-Width Row without image */
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap justify-between items-center gap-2">
+                      <span className="text-xs font-mono font-bold px-3 py-1 rounded uppercase tracking-wider"
+                            style={{ backgroundColor: 'rgba(var(--green-rgb), 0.12)', color: 'var(--green)' }}>
+                        {lead.period}
+                      </span>
+                      {lead.badge && (
+                        <span className="text-[0.7rem] font-mono font-bold uppercase px-3 py-1 rounded flex items-center gap-1.5"
+                              style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)', border: '1px solid rgba(var(--green-rgb), 0.2)' }}>
+                          <FiAward className="text-xs" /> {lead.badge}
+                        </span>
+                      )}
+                    </div>
 
-                {lead.quote && (
-                  <blockquote className="mb-4 p-4 rounded-xl italic text-xs md:text-sm font-semibold border-l-4 leading-relaxed"
-                              style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--orange)', color: 'var(--text-primary)' }}>
-                    "{lead.quote}"
-                  </blockquote>
-                )}
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-extrabold" style={{ color: 'var(--text-primary)' }}>
+                        {lead.role}
+                      </h3>
+                      <p className="text-xs md:text-sm font-mono font-semibold mt-1" style={{ color: 'var(--text-muted)' }}>
+                        {lead.organization}
+                      </p>
+                    </div>
 
-                <ul className="space-y-2.5 pl-4 list-disc text-xs md:text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                  {lead.points.map((pt, i) => (
-                    <li key={i}>{pt}</li>
-                  ))}
-                </ul>
-
-                {lead.tagline && (
-                  <div className="mt-4 pt-3 border-t text-xs font-mono font-bold flex items-center gap-2"
-                       style={{ borderColor: 'var(--border-neutral)', color: 'var(--orange)' }}>
-                    {lead.tagline}
+                    <ul className="space-y-2.5 pl-4 list-disc text-xs md:text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                      {lead.points.map((pt, i) => (
+                        <li key={i}>{pt}</li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
@@ -594,7 +640,7 @@ const About = () => {
             >
               <button
                 onClick={() => setSelectedPoster(null)}
-                className="absolute top-6 right-6 z-10 p-2.5 bg-black/70 hover:bg-black text-white rounded-full transition-colors border border-white/20"
+                className="absolute top-6 right-6 z-10 p-2.5 bg-black/70 hover:bg-black text-white rounded-full transition-colors border border-white/20 cursor-pointer"
                 aria-label="Close modal"
               >
                 <FiX className="text-xl" />
