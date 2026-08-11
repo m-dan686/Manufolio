@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiX, FiMaximize2, FiAward } from 'react-icons/fi';
 import { IconCloud } from '../components/ui/interactive-icon-cloud';
 import { Skiper31 } from '../components/ui/text-scroll-animation';
 import { BorderTrail } from '../components/ui/border-trail';
@@ -80,6 +82,10 @@ const leadershipData = [
     role: "IGNITE Tech Community — Secretary",
     organization: "Sri Krishna College of Technology",
     period: "Active",
+    badge: "Official Office Bearer",
+    image: import.meta.env.BASE_URL + "files/portfolio_images/ignite_secretary.jpg",
+    quote: "Organizing today with dedication, uniting tomorrow for a greater impact.",
+    tagline: "Ignite Ideas. Build Solutions. Create Impact. 🔥",
     points: [
       "Coordinate and organize technical events, meetings, and activities.",
       "Maintain proper communication and documentation within the community.",
@@ -115,6 +121,7 @@ const participationsData = [
 const About = () => {
   const containerRef = useRef(null);
   const [activeTech, setActiveTech] = useState("Python / AI Ecosystem");
+  const [selectedPoster, setSelectedPoster] = useState(null);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -446,7 +453,7 @@ const About = () => {
         {/* ═══════════════════════════════
             LEADERSHIP & RESPONSIBILITIES
         ═══════════════════════════════ */}
-        <div className="leadership-section mb-24 max-w-4xl mx-auto">
+        <div className="leadership-section mb-24 max-w-5xl mx-auto">
           <div className="mb-10">
             <span className="text-xs font-mono font-bold tracking-widest uppercase px-3 py-1 rounded-full"
                   style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)', border: '1px solid rgba(var(--green-rgb), 0.2)' }}>
@@ -455,27 +462,79 @@ const About = () => {
             <TextReveal text="Leadership & Responsibilities" as="h2" className="text-3xl md:text-4xl font-extrabold mt-2" style={{ color: 'var(--text-primary)' }} />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-12 gap-8 items-start">
             {leadershipData.map((lead, idx) => (
-              <div key={idx} className="leadership-card p-6 md:p-8 rounded-2xl shadow-md transition-all duration-300 hover:-translate-y-1"
-                   style={{ backgroundColor: 'var(--card-bg)', border: '1.5px solid var(--card-border)' }}>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs font-mono font-bold" style={{ color: 'var(--orange)' }}>
+              <div
+                key={idx}
+                className={`leadership-card p-6 md:p-8 rounded-3xl shadow-xl transition-all duration-300 relative overflow-hidden ${
+                  lead.image ? "lg:col-span-7" : "lg:col-span-5"
+                }`}
+                style={{ backgroundColor: 'var(--card-bg)', border: lead.image ? '2px solid var(--orange)' : '1.5px solid var(--card-border)' }}
+              >
+                {lead.image && <BorderTrail color="var(--orange)" duration={6} />}
+
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs font-mono font-bold px-2.5 py-1 rounded uppercase tracking-wider"
+                        style={{ backgroundColor: lead.image ? 'var(--orange-soft)' : 'rgba(var(--green-rgb), 0.12)', color: lead.image ? 'var(--orange)' : 'var(--green)' }}>
                     {lead.period}
                   </span>
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--green)' }} />
+                  {lead.badge && (
+                    <span className="text-[0.65rem] font-mono font-bold uppercase px-2.5 py-0.5 rounded flex items-center gap-1"
+                          style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)' }}>
+                      <FiAward className="text-xs" /> {lead.badge}
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-xl font-extrabold mb-1" style={{ color: 'var(--text-primary)' }}>
+
+                <h3 className="text-xl md:text-2xl font-extrabold mb-1" style={{ color: 'var(--text-primary)' }}>
                   {lead.role}
                 </h3>
                 <p className="text-xs font-mono font-semibold mb-4" style={{ color: 'var(--text-muted)' }}>
                   {lead.organization}
                 </p>
-                <ul className="space-y-2 pl-4 list-disc text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+
+                {/* Poster Image Highlight for IGNITE Secretary Role */}
+                {lead.image && (
+                  <div className="mb-6 rounded-2xl overflow-hidden relative group cursor-pointer border shadow-lg"
+                       onClick={() => setSelectedPoster(lead)}
+                       style={{ borderColor: 'var(--card-border)' }}>
+                    <img
+                      src={lead.image}
+                      alt={lead.role}
+                      className="w-full h-auto max-h-[360px] object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity flex flex-col justify-end p-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[0.7rem] font-mono font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">
+                          <FiMaximize2 /> Tap to Expand Poster
+                        </span>
+                        <span className="text-[0.65rem] font-mono text-white/70 bg-white/10 px-2 py-0.5 rounded">
+                          Official Appointment Poster
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {lead.quote && (
+                  <blockquote className="mb-4 p-4 rounded-xl italic text-xs md:text-sm font-semibold border-l-4 leading-relaxed"
+                              style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--orange)', color: 'var(--text-primary)' }}>
+                    "{lead.quote}"
+                  </blockquote>
+                )}
+
+                <ul className="space-y-2.5 pl-4 list-disc text-xs md:text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                   {lead.points.map((pt, i) => (
                     <li key={i}>{pt}</li>
                   ))}
                 </ul>
+
+                {lead.tagline && (
+                  <div className="mt-4 pt-3 border-t text-xs font-mono font-bold flex items-center gap-2"
+                       style={{ borderColor: 'var(--border-neutral)', color: 'var(--orange)' }}>
+                    {lead.tagline}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -519,6 +578,45 @@ const About = () => {
         </div>
 
       </div>
+
+      {/* Official Appointment Poster Full Modal */}
+      <AnimatePresence>
+        {selectedPoster && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+               onClick={() => setSelectedPoster(null)}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-xl w-full bg-[#0b0b0b] border-2 border-orange-500/40 rounded-3xl overflow-hidden shadow-2xl p-4"
+            >
+              <button
+                onClick={() => setSelectedPoster(null)}
+                className="absolute top-6 right-6 z-10 p-2.5 bg-black/70 hover:bg-black text-white rounded-full transition-colors border border-white/20"
+                aria-label="Close modal"
+              >
+                <FiX className="text-xl" />
+              </button>
+
+              <div className="rounded-2xl overflow-hidden border border-white/10 max-h-[80vh] flex items-center justify-center bg-black">
+                <img
+                  src={selectedPoster.image}
+                  alt={selectedPoster.role}
+                  className="w-full h-auto max-h-[78vh] object-contain"
+                />
+              </div>
+
+              <div className="mt-4 text-center space-y-1">
+                <h4 className="text-lg font-bold text-white">{selectedPoster.role}</h4>
+                <p className="text-xs font-mono text-orange-400">{selectedPoster.organization}</p>
+                <p className="text-xs text-white/60 italic pt-1">"{selectedPoster.quote}"</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
