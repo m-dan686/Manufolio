@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiMaximize2, FiAward } from 'react-icons/fi';
+import { FiX, FiMaximize2, FiAward, FiFileText } from 'react-icons/fi';
 import { IconCloud } from '../components/ui/interactive-icon-cloud';
 import { Skiper31 } from '../components/ui/text-scroll-animation';
 import { BorderTrail } from '../components/ui/border-trail';
@@ -101,32 +101,47 @@ const leadershipData = [
 
 const participationsData = [
   {
+    event: "KREATiVEGENESIS 2026",
+    institution: "KGiSL Educational Institutions",
+    org: "30-Hour National Innovation Hackathon",
+    role: "Participant",
+    date: "March 05–06, 2026",
+    certificate: import.meta.env.BASE_URL + "files/participations/kreativegenesis_2026.jpg",
+    details: "Demonstrated innovation, teamwork, and technical problem-solving during 30-hour coding sprint."
+  },
+  {
     event: "KRIYA Ideathon 2026",
     institution: "PSG College of Technology",
     org: "Students Union 2025–2026",
     role: "Participant",
-    date: "March 13–15, 2026"
+    date: "March 13–15, 2026",
+    certificate: import.meta.env.BASE_URL + "files/participations/kriya_2026.png",
+    details: "Participated in the premier ideathon event of KRIYA 2026 global technical fest."
   },
   {
     event: "Paper Presentation — Digital Innovators",
     institution: "Sri Ramakrishna Engineering College",
-    org: "SREC Utsava'26",
+    org: "SREC UTSAVA'26",
     role: "Participant",
-    date: "January 30–31, 2026"
+    date: "January 30–31, 2026",
+    certificate: import.meta.env.BASE_URL + "files/participations/srec_utsava_2026.jpg",
+    details: "Presented technical research paper on digital innovations and emerging technologies."
   },
   {
     event: "VEL IDEAFORGE 2K26",
-    institution: "Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology",
+    institution: "Vel Tech Rangarajan Dr. Sagunthala R&D Institute",
     org: "National Level 24 Hours Hackathon",
     role: "Participant",
-    date: "February 19–20, 2026"
+    date: "February 19–20, 2026",
+    certificate: import.meta.env.BASE_URL + "files/participations/vel_ideaforge_2026.png",
+    details: "Successfully developed application prototype during 24-hour national hackathon."
   }
 ];
 
 const About = () => {
   const containerRef = useRef(null);
   const [activeTech, setActiveTech] = useState("Python / AI Ecosystem");
-  const [selectedPoster, setSelectedPoster] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -456,7 +471,7 @@ const About = () => {
         </div>
 
         {/* ═══════════════════════════════
-            LEADERSHIP & RESPONSIBILITIES (ROW-BASED STACKED LAYOUT)
+            LEADERSHIP & RESPONSIBILITIES
         ═══════════════════════════════ */}
         <div className="leadership-section mb-24 max-w-5xl mx-auto">
           <div className="mb-10">
@@ -467,7 +482,6 @@ const About = () => {
             <TextReveal text="Leadership & Responsibilities" as="h2" className="text-3xl md:text-4xl font-extrabold mt-2" style={{ color: 'var(--text-primary)' }} />
           </div>
 
-          {/* Stacked Full-Width Rows */}
           <div className="flex flex-col gap-8">
             {leadershipData.map((lead, idx) => (
               <div
@@ -480,14 +494,12 @@ const About = () => {
               >
                 {lead.image && <BorderTrail color={idx === 0 ? "var(--orange)" : "var(--green)"} duration={6} />}
 
-                {/* If the item has an image, arrange poster/photo and details in a balanced 2-column grid row */}
                 {lead.image ? (
                   <div className="grid md:grid-cols-12 gap-8 items-center">
-                    {/* Left Column: Image Preview */}
                     <div className="md:col-span-5">
                       <div
                         className="rounded-2xl overflow-hidden relative group cursor-pointer border shadow-lg bg-black/40"
-                        onClick={() => setSelectedPoster(lead)}
+                        onClick={() => setSelectedMedia({ title: lead.role, subtitle: lead.organization, quote: lead.quote, src: lead.image })}
                         style={{ borderColor: 'var(--card-border)' }}
                       >
                         <img
@@ -509,7 +521,6 @@ const About = () => {
                       </div>
                     </div>
 
-                    {/* Right Column: Role Details */}
                     <div className="md:col-span-7 space-y-4">
                       <div className="flex flex-wrap justify-between items-center gap-2">
                         <span className="text-xs font-mono font-bold px-3 py-1 rounded uppercase tracking-wider"
@@ -569,7 +580,6 @@ const About = () => {
                     </div>
                   </div>
                 ) : (
-                  /* Standard Full-Width Row without image */
                   <div className="space-y-4">
                     <div className="flex flex-wrap justify-between items-center gap-2">
                       <span className="text-xs font-mono font-bold px-3 py-1 rounded uppercase tracking-wider"
@@ -617,26 +627,58 @@ const About = () => {
             <TextReveal text="Participations & Hackathons" as="h2" className="text-3xl md:text-4xl font-extrabold mt-2 justify-center" style={{ color: 'var(--text-primary)' }} />
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {participationsData.map((event, idx) => (
-              <div key={idx} className="participation-card p-6 rounded-2xl shadow-md transition-all duration-300 hover:-translate-y-1.5"
-                   style={{ backgroundColor: 'var(--card-bg)', border: '1.5px solid var(--card-border)' }}>
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-[0.7rem] font-mono font-extrabold uppercase px-2.5 py-1 rounded"
-                        style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)', border: '1px solid rgba(var(--green-rgb), 0.2)' }}>
-                    {event.role}
-                  </span>
-                  <span className="text-xs font-mono text-[var(--text-muted)]">{event.date}</span>
+              <div
+                key={idx}
+                className="participation-card p-5 rounded-2xl shadow-md transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group"
+                style={{ backgroundColor: 'var(--card-bg)', border: '1.5px solid var(--card-border)' }}
+              >
+                <div>
+                  {/* Certificate Image Thumbnail */}
+                  <div
+                    className="w-full h-40 rounded-xl overflow-hidden mb-4 relative cursor-pointer border bg-black/40"
+                    onClick={() => setSelectedMedia({ title: event.event, subtitle: `${event.institution} • ${event.date}`, quote: event.details, src: event.certificate })}
+                    style={{ borderColor: 'var(--card-border)' }}
+                  >
+                    <img
+                      src={event.certificate}
+                      alt={event.event}
+                      className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-75 group-hover:opacity-95 transition-opacity flex flex-col justify-end p-2.5">
+                      <span className="text-[0.65rem] font-mono font-bold text-orange-400 uppercase tracking-wider flex items-center gap-1">
+                        <FiMaximize2 /> View Certificate
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-[0.65rem] font-mono font-extrabold uppercase px-2 py-0.5 rounded"
+                          style={{ backgroundColor: 'var(--green-soft)', color: 'var(--green)', border: '1px solid rgba(var(--green-rgb), 0.2)' }}>
+                      {event.role}
+                    </span>
+                    <span className="text-[0.65rem] font-mono text-[var(--text-muted)]">{event.date}</span>
+                  </div>
+
+                  <h3 className="text-base font-bold mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
+                    {event.event}
+                  </h3>
+                  <p className="text-xs font-semibold mb-1" style={{ color: 'var(--orange)' }}>
+                    {event.institution}
+                  </p>
+                  <p className="text-[0.65rem] font-mono mb-3" style={{ color: 'var(--text-muted)' }}>
+                    {event.org}
+                  </p>
                 </div>
-                <h3 className="text-lg font-bold mb-2 line-clamp-2" style={{ color: 'var(--text-primary)' }}>
-                  {event.event}
-                </h3>
-                <p className="text-xs font-semibold mb-1" style={{ color: 'var(--orange)' }}>
-                  {event.institution}
-                </p>
-                <p className="text-[0.7rem] font-mono" style={{ color: 'var(--text-muted)' }}>
-                  {event.org}
-                </p>
+
+                <button
+                  onClick={() => setSelectedMedia({ title: event.event, subtitle: `${event.institution} • ${event.date}`, quote: event.details, src: event.certificate })}
+                  className="w-full py-2 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5 transition-all duration-200 cursor-pointer shadow-sm border-none"
+                  style={{ backgroundColor: 'var(--green)' }}
+                >
+                  <FiFileText /> View Certificate
+                </button>
               </div>
             ))}
           </div>
@@ -644,39 +686,39 @@ const About = () => {
 
       </div>
 
-      {/* Official Appointment / Role Image Full Modal */}
+      {/* Full-Screen Media & Certificate Modal */}
       <AnimatePresence>
-        {selectedPoster && (
+        {selectedMedia && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
-               onClick={() => setSelectedPoster(null)}>
+               onClick={() => setSelectedMedia(null)}>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               transition={{ duration: 0.25 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-2xl w-full bg-[#0b0b0b] border-2 border-orange-500/40 rounded-3xl overflow-hidden shadow-2xl p-4"
+              className="relative max-w-3xl w-full bg-[#0b0b0b] border-2 border-orange-500/40 rounded-3xl overflow-hidden shadow-2xl p-4 md:p-6"
             >
               <button
-                onClick={() => setSelectedPoster(null)}
+                onClick={() => setSelectedMedia(null)}
                 className="absolute top-6 right-6 z-10 p-2.5 bg-black/70 hover:bg-black text-white rounded-full transition-colors border border-white/20 cursor-pointer"
                 aria-label="Close modal"
               >
                 <FiX className="text-xl" />
               </button>
 
-              <div className="rounded-2xl overflow-hidden border border-white/10 max-h-[80vh] flex items-center justify-center bg-black">
+              <div className="rounded-2xl overflow-hidden border border-white/10 max-h-[75vh] flex items-center justify-center bg-black">
                 <img
-                  src={selectedPoster.image}
-                  alt={selectedPoster.role}
-                  className="w-full h-auto max-h-[78vh] object-contain"
+                  src={selectedMedia.src}
+                  alt={selectedMedia.title}
+                  className="w-full h-auto max-h-[73vh] object-contain"
                 />
               </div>
 
               <div className="mt-4 text-center space-y-1">
-                <h4 className="text-lg font-bold text-white">{selectedPoster.role}</h4>
-                <p className="text-xs font-mono text-orange-400">{selectedPoster.organization}</p>
-                {selectedPoster.quote && <p className="text-xs text-white/60 italic pt-1">"{selectedPoster.quote}"</p>}
+                <h4 className="text-lg font-bold text-white">{selectedMedia.title}</h4>
+                <p className="text-xs font-mono text-orange-400">{selectedMedia.subtitle}</p>
+                {selectedMedia.quote && <p className="text-xs text-white/60 italic pt-1">"{selectedMedia.quote}"</p>}
               </div>
             </motion.div>
           </div>
