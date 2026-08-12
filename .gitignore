@@ -18,6 +18,12 @@ frontend/.env.*
 
 # Backend
 backend/target/
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Database Backups & Dumps
+*.sql
 
 # Editor directories and files
 .vscode/*
