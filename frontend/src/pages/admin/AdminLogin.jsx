@@ -27,7 +27,18 @@ const AdminLogin = () => {
                 }
             });
         } catch (err) {
-            const message = err.response?.data?.message || "Invalid credentials";
+            let message = "Authentication failed";
+            if (!err.response) {
+                message = "Cannot connect to backend. Please check your network or CORS configuration.";
+            } else if (err.response.status === 401) {
+                message = err.response.data?.message || "Invalid username or password";
+            } else if (err.response.status === 403) {
+                message = "Access denied. CORS or authorization issue.";
+            } else if (err.response.status >= 500) {
+                message = "Backend server error. Please try again later.";
+            } else {
+                message = err.response.data?.message || "Authentication response error.";
+            }
             setError(message);
             gsap.fromTo(".login-box",
                 { x: -10 },
@@ -35,6 +46,7 @@ const AdminLogin = () => {
             );
         }
     };
+
 
     return (
         <div className="login-container min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-6 text-[var(--text-primary)] overflow-hidden relative transition-colors duration-300">
