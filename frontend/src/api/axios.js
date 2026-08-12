@@ -1,12 +1,23 @@
 import axios from "axios";
 
 /**
- * Centralized Axios instance.
- * baseURL is driven by the VITE_API_BASE_URL environment variable so
- * switching between local / staging / production requires only a .env change.
+ * Centralized Axios instance for Manufolio API.
+ * Dynamically resolves VITE_API_BASE_URL so switching environments works seamlessly.
  */
+const getBaseUrl = () => {
+    let url = import.meta.env.VITE_API_BASE_URL || "https://manufolio.onrender.com/api";
+    url = url.trim();
+    if (url.endsWith('/')) {
+        url = url.slice(0, -1);
+    }
+    if (!url.endsWith('/api')) {
+        url = url + '/api';
+    }
+    return url;
+};
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api",
+    baseURL: getBaseUrl(),
     headers: {
         "Content-Type": "application/json",
     },
@@ -89,7 +100,7 @@ api.interceptors.response.use(
 
             try {
                 const response = await axios.post(
-                    (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api") + "/auth/refresh",
+                    getBaseUrl() + "/auth/refresh",
                     { refreshToken }
                 );
 

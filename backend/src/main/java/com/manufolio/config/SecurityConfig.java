@@ -33,7 +33,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    @Value("${cors.allowed-origins:http://localhost:5173,http://localhost:4173,http://127.0.0.1:5173}")
+    @Value("${cors.allowed-origins:https://manufolio.vercel.app,http://localhost:5173,http://localhost:4173,http://127.0.0.1:5173}")
     private String allowedOriginsString;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
@@ -90,7 +90,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(List.of("*"));
+        List<String> origins = java.util.Arrays.stream(allowedOriginsString.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(java.util.stream.Collectors.toList());
+
+        config.setAllowedOriginPatterns(origins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization"));
