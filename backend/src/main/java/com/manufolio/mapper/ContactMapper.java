@@ -21,7 +21,11 @@ public class ContactMapper {
         String normalizedPhone = (phoneInput == null || phoneInput.trim().isEmpty()) ? null : phoneInput.trim();
         LocalDateTime now = LocalDateTime.now();
 
+        String key = (request.getIdempotencyKey() == null || request.getIdempotencyKey().trim().isEmpty())
+                ? null : request.getIdempotencyKey().trim();
+
         return Contact.builder()
+                .idempotencyKey(key)
                 .name(request.getName().trim())
                 .email(request.getEmail().trim().toLowerCase())
                 .phone(normalizedPhone)
@@ -43,6 +47,9 @@ public class ContactMapper {
                 .phone(contact.getPhone())
                 .message(contact.getMessage())
                 .read(contact.getRead())
+                .emailNotificationStatus(contact.getEmailNotificationStatus())
+                .emailNotificationSentAt(contact.getEmailNotificationSentAt())
+                .emailNotificationError(contact.getEmailNotificationError())
                 .sentAt(contact.getSentAt())
                 .updatedAt(contact.getUpdatedAt())
                 .build();

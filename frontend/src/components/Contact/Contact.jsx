@@ -106,13 +106,34 @@ export default function Contact() {
         });
     }
 
+    const idempotencyKeyRef = useRef(crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
+
+    const payload = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      message: formData.message.trim(),
+      idempotencyKey: idempotencyKeyRef.current,
+    };
+
+    const attemptSubmission = async (isRetry = false) => {
+      try {
+        await submitContact(payload);
+        return true;
+      } catch (error) {
+        // Cold-start retry check: if network error / server unavailable and not retried yet, retry ONCE
+        const isNetworkOrServerError = !error.response || (error.response.status >= 500 && error.response.status !== 500);
+        if (!isRetry && isNetworkOrServerError) {
+          console.warn("[CONTACT] Primary submission failed due to cold-start / network error. Retrying once after 1.5s...");
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          return await attemptSubmission(true);
+        }
+        throw error;
+      }
+    };
+
     try {
-      await submitContact({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim(),
-        message: formData.message.trim(),
-      });
+      await attemptSubmission(false);
 
       if (submitBtnRef.current) {
         gsap.to(submitBtnRef.current, {
@@ -125,11 +146,13 @@ export default function Contact() {
               setFormData({ name: '', email: '', phone: '', message: '' });
               setErrors({});
               setTouched({});
+              idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
             }, 500);
           }
         });
       } else {
         setSent(true);
+        idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       }
     } catch (error) {
       console.error("Contact submission error:", error);
@@ -144,7 +167,7 @@ export default function Contact() {
       } else if (error.response?.status === 429) {
         setSubmitError("Too many requests. Please try again later.");
       } else {
-        setSubmitError("Message could not be sent to the backend. Please check connection and try again.");
+        setSubmitError("Unable to reach the server right now. Please try again in a moment.");
       }
     } finally {
       setIsSubmitting(false);

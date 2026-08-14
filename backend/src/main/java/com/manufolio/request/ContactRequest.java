@@ -26,6 +26,9 @@ public class ContactRequest {
     @Size(min = 10, max = 2000, message = "Message must be between 10 and 2000 characters")
     private String message;
 
+    @Size(max = 64, message = "Idempotency key must not exceed 64 characters")
+    private String idempotencyKey;
+
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
     }

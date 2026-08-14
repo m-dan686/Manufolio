@@ -63,4 +63,8 @@ public class RateLimitingInterceptor implements HandlerInterceptor {
 
         return true;
     }
+
+    public void clearRequestHistory() {
+        requestHistory.clear();
+    }
 }

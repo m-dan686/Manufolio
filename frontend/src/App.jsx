@@ -10,12 +10,18 @@ import PageLoader from './components/animations/PageLoader';
 import ManufolioBackground from './components/animations/ManufolioBackground';
 import EditorialSpine from './components/ui/EditorialSpine';
 import { initSmoothScroll } from './utils/smoothScroll';
+import { pingHealth } from './api/services/healthService';
 import './styles/background.css';
 
 function App() {
   const location = useLocation();
   const isAdminMode = location.pathname.startsWith('/admin');
   const progressRef = useRef(null);
+
+  // Trigger ONE background health request on app mount to wake Render free-tier backend
+  useEffect(() => {
+    pingHealth();
+  }, []);
 
   // Initialize Global Lenis Smooth Scroll
   useEffect(() => {

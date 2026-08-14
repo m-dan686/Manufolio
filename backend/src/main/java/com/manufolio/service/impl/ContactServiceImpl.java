@@ -6,10 +6,13 @@ import com.manufolio.repository.ContactRepository;
 import com.manufolio.request.ContactRequest;
 import com.manufolio.service.ContactService;
 import lombok.extern.slf4j.Slf4j;
+import com.manufolio.event.ContactSubmittedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * ContactService implementation — handles public contact form submissions.
@@ -20,15 +23,30 @@ public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository contactRepository;
     private final ContactMapper contactMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public ContactServiceImpl(ContactRepository contactRepository, ContactMapper contactMapper) {
+    public ContactServiceImpl(
+            ContactRepository contactRepository,
+            ContactMapper contactMapper,
+            ApplicationEventPublisher eventPublisher) {
         this.contactRepository = contactRepository;
         this.contactMapper = contactMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
     @Transactional
     public void submitContact(ContactRequest request) {
+        String idempotencyKey = request.getIdempotencyKey();
+        if (idempotencyKey != null && !idempotencyKey.trim().isEmpty()) {
+            Optional<Contact> existing = contactRepository.findByIdempotencyKey(idempotencyKey.trim());
+            if (existing.isPresent()) {
+                log.info("[CONTACT] Idempotent retry detected for key='{}': message already saved (id={}) — skipping duplicate persistence",
+                        idempotencyKey.trim(), existing.get().getId());
+                return;
+            }
+        }
+
         Contact contact = contactMapper.toEntity(request);
         if (contact.getSentAt() == null) {
             contact.setSentAt(LocalDateTime.now());
@@ -36,7 +54,12 @@ public class ContactServiceImpl implements ContactService {
         if (contact.getUpdatedAt() == null) {
             contact.setUpdatedAt(LocalDateTime.now());
         }
-        contactRepository.save(contact);
-        log.info("[CONTACT] New message from {} <{}>", contact.getName(), contact.getEmail());
+
+        Contact savedContact = contactRepository.save(contact);
+        log.info("[CONTACT] Contact message persisted: messageId={} from {} <{}>",
+                savedContact.getId(), savedContact.getName(), savedContact.getEmail());
+
+        // Publish event — ContactEventListener will process email notification AFTER_COMMIT
+        eventPublisher.publishEvent(new ContactSubmittedEvent(this, savedContact.getId()));
     }
 }

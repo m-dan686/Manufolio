@@ -10,14 +10,54 @@ import com.manufolio.response.ApiResponse;
 import com.manufolio.request.ContactRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
+import java.util.UUID;
+
+import com.manufolio.security.RateLimitingInterceptor;
+import org.junit.jupiter.api.BeforeEach;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ManufolioApplicationTests {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
+    @Autowired
+    private RateLimitingInterceptor rateLimitingInterceptor;
+
+    @BeforeEach
+    void setUp() {
+        rateLimitingInterceptor.clearRequestHistory();
+    }
+
     @Test
     void contextLoads() {
+    }
+
+    @Test
+    void testHealthEndpoint() {
+        ResponseEntity<Map> response = restTemplate.getForEntity("/api/health", Map.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().get("status")).isEqualTo("UP");
+    }
+
+    @Test
+    void testContactSubmitIdempotency() {
+        String key = "test-key-" + UUID.randomUUID();
+        ContactRequest request = new ContactRequest();
+        request.setName("Idempotency Test");
+        request.setEmail("idempotent@example.com");
+        request.setMessage("Testing idempotency key retry safeguard");
+        request.setIdempotencyKey(key);
+
+        // First submission
+        ResponseEntity<ApiResponse> response1 = restTemplate.postForEntity("/api/contact/submit", request, ApiResponse.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        // Duplicate submission with same idempotency key
+        ResponseEntity<ApiResponse> response2 = restTemplate.postForEntity("/api/contact/submit", request, ApiResponse.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
