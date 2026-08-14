@@ -43,6 +43,7 @@ export default function Contact() {
   const leftRef = useRef(null);
   const rightRef = useRef(null);
   const submitBtnRef = useRef(null);
+  const idempotencyKeyRef = useRef(null);
 
   const [sent, setSent] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
@@ -68,6 +69,7 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.debug("[CONTACT] handleSubmit entered");
     if (isSubmitting) return;
     setSubmitError('');
 
@@ -86,6 +88,7 @@ export default function Contact() {
       return;
     }
 
+    console.debug("[CONTACT] validation passed");
     setIsSubmitting(true);
 
     /* ═══ GSAP BUTTON ANIMATION ═══ */
@@ -106,7 +109,9 @@ export default function Contact() {
         });
     }
 
-    const idempotencyKeyRef = useRef(crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
+    if (!idempotencyKeyRef.current) {
+      idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    }
 
     const payload = {
       name: formData.name.trim(),
@@ -116,13 +121,15 @@ export default function Contact() {
       idempotencyKey: idempotencyKeyRef.current,
     };
 
+    console.debug("[CONTACT] submitting request");
+
     const attemptSubmission = async (isRetry = false) => {
       try {
         await submitContact(payload);
         return true;
       } catch (error) {
-        // Cold-start retry check: if network error / server unavailable and not retried yet, retry ONCE
-        const isNetworkOrServerError = !error.response || (error.response.status >= 500 && error.response.status !== 500);
+        // Cold-start retry check: if network error / server error (5xx) and not retried yet, retry ONCE
+        const isNetworkOrServerError = !error.response || error.response.status >= 500;
         if (!isRetry && isNetworkOrServerError) {
           console.warn("[CONTACT] Primary submission failed due to cold-start / network error. Retrying once after 1.5s...");
           await new Promise(resolve => setTimeout(resolve, 1500));
@@ -134,6 +141,7 @@ export default function Contact() {
 
     try {
       await attemptSubmission(false);
+      console.debug("[CONTACT] submission successful");
 
       if (submitBtnRef.current) {
         gsap.to(submitBtnRef.current, {
@@ -155,7 +163,7 @@ export default function Contact() {
         idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       }
     } catch (error) {
-      console.error("Contact submission error:", error);
+      console.error("[CONTACT] submission failed", error);
       btnTimeline.kill();
       if (submitBtnRef.current) {
         gsap.to(submitBtnRef.current, { text: "Send Message", duration: 0.3 });
