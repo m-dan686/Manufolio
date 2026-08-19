@@ -4,25 +4,22 @@ import com.manufolio.entity.Contact;
 import com.manufolio.enums.NotificationStatus;
 import com.manufolio.repository.ContactRepository;
 import com.manufolio.service.EmailNotificationService;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.HtmlUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of EmailNotificationService.
- * Delivers transactional contact emails asynchronously via Brevo HTTPS REST API (Port 443).
+ * Delivers transactional contact emails asynchronously via JavaMailSender (SMTP).
  * Guaranteed to isolate failures so Contact submission never fails or rolls back.
  */
 @Slf4j
@@ -30,36 +27,22 @@ import java.util.Map;
 public class EmailNotificationServiceImpl implements EmailNotificationService {
 
     private final ContactRepository contactRepository;
-    private final RestTemplate restTemplate;
+    private final JavaMailSender mailSender;
+    private final String mailFrom;
+    private final String mailFromName;
+    private final String mailTo;
 
-    @Value("${brevo.api.key:}")
-    private String brevoApiKey;
-
-    @Value("${brevo.api.url:https://api.brevo.com/v3/smtp/email}")
-    private String brevoApiUrl;
-
-    @Value("${brevo.sender.email:}")
-    private String brevoSenderEmail;
-
-    @Value("${brevo.sender.name:Manufolio}")
-    private String brevoSenderName;
-
-    @Value("${brevo.to.email:}")
-    private String brevoToEmail;
-
-    @Autowired
     public EmailNotificationServiceImpl(
             ContactRepository contactRepository,
-            @Autowired(required = false) RestTemplate restTemplate) {
+            JavaMailSender mailSender,
+            @Value("${app.mail.from:}") String mailFrom,
+            @Value("${app.mail.from-name:Manufolio}") String mailFromName,
+            @Value("${app.mail.to:}") String mailTo) {
         this.contactRepository = contactRepository;
-        if (restTemplate != null) {
-            this.restTemplate = restTemplate;
-        } else {
-            SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-            factory.setConnectTimeout(5000);
-            factory.setReadTimeout(5000);
-            this.restTemplate = new RestTemplate(factory);
-        }
+        this.mailSender = mailSender;
+        this.mailFrom = mailFrom;
+        this.mailFromName = mailFromName;
+        this.mailTo = mailTo;
     }
 
     @Override
@@ -76,22 +59,20 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
             return;
         }
 
-        // Determine if required Brevo configuration is missing
-        boolean isConfigured = brevoApiKey != null && !brevoApiKey.trim().isEmpty()
-                && brevoSenderEmail != null && !brevoSenderEmail.trim().isEmpty()
-                && brevoToEmail != null && !brevoToEmail.trim().isEmpty()
-                && brevoApiUrl != null && !brevoApiUrl.trim().isEmpty();
+        // Determine if required email configuration is missing
+        boolean isConfigured = mailTo != null && !mailTo.trim().isEmpty()
+                && mailFrom != null && !mailFrom.trim().isEmpty();
 
         if (!isConfigured) {
-            log.info("[EMAIL] Notification SKIPPED for contactId={}: Brevo API credentials not fully configured", contactId);
+            log.info("[EMAIL] Notification SKIPPED for contactId={}: Application mail settings (app.mail.to / app.mail.from) not configured", contactId);
             contact.setEmailNotificationStatus(NotificationStatus.SKIPPED);
-            contact.setEmailNotificationError("Brevo API credentials (BREVO_API_KEY/BREVO_SENDER_EMAIL/BREVO_TO_EMAIL) not configured");
+            contact.setEmailNotificationError("Application mail configuration (app.mail.to / app.mail.from) not configured");
             contactRepository.save(contact);
             return;
         }
 
         try {
-            log.info("[EMAIL] Attempting Brevo notification delivery for contactId={}", contactId);
+            log.info("[EMAIL] Attempting SMTP notification delivery for contactId={}", contactId);
 
             String escapedName = HtmlUtils.htmlEscape(contact.getName());
             String escapedEmail = HtmlUtils.htmlEscape(contact.getEmail());
@@ -167,54 +148,38 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
                 Submitted via Manufolio Portfolio
                 """, contact.getName(), contact.getEmail(), (rawPhone != null && !rawPhone.trim().isEmpty()) ? rawPhone.trim() : "Not provided", formattedDate, plainMessage);
 
-            Map<String, Object> body = new HashMap<>();
-            String senderName = (brevoSenderName != null && !brevoSenderName.trim().isEmpty()) ? brevoSenderName.trim() : "Manufolio";
-            body.put("sender", Map.of("name", senderName, "email", brevoSenderEmail.trim()));
-            body.put("to", List.of(Map.of("email", brevoToEmail.trim())));
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            String senderName = (mailFromName != null && !mailFromName.trim().isEmpty())
+                    ? mailFromName.trim()
+                    : "Manufolio";
+
+            helper.setFrom(new InternetAddress(mailFrom.trim(), senderName));
+            helper.setTo(mailTo.trim());
 
             if (contact.getEmail() != null && contact.getEmail().contains("@")) {
-                body.put("replyTo", Map.of("name", contact.getName(), "email", contact.getEmail().trim()));
+                String replyName = (contact.getName() != null && !contact.getName().trim().isEmpty())
+                        ? contact.getName().trim()
+                        : "Visitor";
+                helper.setReplyTo(new InternetAddress(contact.getEmail().trim(), replyName));
             }
 
-            body.put("subject", "New Manufolio Contact Message — " + contact.getName());
-            body.put("htmlContent", htmlBody);
-            body.put("textContent", textBody);
+            helper.setSubject("New Manufolio Contact Message — " + contact.getName());
+            helper.setText(textBody, htmlBody);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-            headers.set("api-key", brevoApiKey.trim());
+            mailSender.send(mimeMessage);
 
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            contact.setEmailNotificationStatus(NotificationStatus.SENT);
+            contact.setEmailNotificationSentAt(LocalDateTime.now());
+            contact.setEmailNotificationError(null);
+            contactRepository.save(contact);
 
-            ResponseEntity<String> response = restTemplate.postForEntity(
-                    brevoApiUrl.trim(),
-                    requestEntity,
-                    String.class
-            );
-
-            if (response.getStatusCode() == HttpStatus.CREATED) {
-                contact.setEmailNotificationStatus(NotificationStatus.SENT);
-                contact.setEmailNotificationSentAt(LocalDateTime.now());
-                contact.setEmailNotificationError(null);
-                contactRepository.save(contact);
-
-                log.info("[EMAIL] Brevo notification accepted for contactId={}", contactId);
-            } else {
-                String errorMsg = "Brevo API returned status: " + response.getStatusCode();
-                contact.setEmailNotificationStatus(NotificationStatus.FAILED);
-                contact.setEmailNotificationError(errorMsg);
-                contactRepository.save(contact);
-
-                log.error("[EMAIL] Brevo notification FAILED for contactId={}: {}", contactId, errorMsg);
-            }
+            log.info("[EMAIL] SMTP notification delivered successfully for contactId={}", contactId);
 
         } catch (Exception e) {
             String rawMessage = e.getMessage() != null ? e.getMessage() : e.toString();
-            if (brevoApiKey != null && !brevoApiKey.trim().isEmpty()) {
-                rawMessage = rawMessage.replace(brevoApiKey.trim(), "******");
-            }
-            log.error("[EMAIL] Brevo notification FAILED for contactId={}: category={}, error={}",
+            log.error("[EMAIL] SMTP notification FAILED for contactId={}: category={}, error={}",
                     contactId, e.getClass().getSimpleName(), rawMessage);
 
             contact.setEmailNotificationStatus(NotificationStatus.FAILED);
