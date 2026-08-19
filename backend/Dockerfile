@@ -24,9 +24,9 @@ USER manufolio:manufolio
 # Copy compiled JAR from builder stage
 COPY --from=builder /app/target/manufolio-backend-1.0.0.jar app.jar
 
-# Render dynamically sets $PORT environment variable
-ENV PORT=8080
-EXPOSE 8080
+# Render dynamically sets $PORT environment variable (defaults to 10000)
+ENV PORT=10000
+EXPOSE 10000
 
 # Launch Spring Boot Application
 ENTRYPOINT ["java", "-jar", "app.jar"]

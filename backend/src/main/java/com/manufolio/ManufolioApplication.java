@@ -25,12 +25,21 @@ public class ManufolioApplication {
     @Value("${admin.seed.password:manu@123}")
     private String seedPassword;
 
+    @Value("${server.port:10000}")
+    private String serverPort;
+
     public static void main(String[] args) {
         SpringApplication.run(ManufolioApplication.class, args);
-        log.info("==========================================");
-        log.info(" Manufolio Backend started successfully!");
-        log.info(" API available at: http://localhost:8080/api");
-        log.info("==========================================");
+    }
+
+    @Bean
+    public CommandLineRunner logStartupInfo() {
+        return args -> {
+            log.info("==========================================");
+            log.info(" Manufolio Backend started successfully!");
+            log.info(" API available at: http://localhost:{}/api", serverPort);
+            log.info("==========================================");
+        };
     }
 
     /**
