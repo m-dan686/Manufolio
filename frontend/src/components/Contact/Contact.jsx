@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextPlugin } from "gsap/TextPlugin";
 import { submitContact } from "../../api/services/contactService";
+import { sendContactEmail } from "../../api/services/emailService";
 import { BorderTrail } from "../ui/border-trail";
 import "./contact.css";
 
@@ -46,6 +47,7 @@ export default function Contact() {
   const idempotencyKeyRef = useRef(null);
 
   const [sent, setSent] = useState(false);
+  const [emailStatusNote, setEmailStatusNote] = useState('');
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -72,6 +74,7 @@ export default function Contact() {
     console.debug("[CONTACT] handleSubmit entered");
     if (isSubmitting) return;
     setSubmitError('');
+    setEmailStatusNote('');
 
     setTouched({ name: true, email: true, phone: true, message: true });
     const allErrors = validate(formData);
@@ -121,7 +124,7 @@ export default function Contact() {
       idempotencyKey: idempotencyKeyRef.current,
     };
 
-    console.debug("[CONTACT] submitting request");
+    console.debug("[CONTACT] submitting request to backend");
 
     const attemptSubmission = async (isRetry = false) => {
       try {
@@ -140,8 +143,15 @@ export default function Contact() {
     };
 
     try {
+      // 1. Save contact through Spring Boot API (MySQL persistence)
       await attemptSubmission(false);
-      console.debug("[CONTACT] submission successful");
+      console.debug("[CONTACT] backend persistence successful");
+
+      // 2. Trigger EmailJS notification ONLY AFTER backend persistence is confirmed
+      const emailResult = await sendContactEmail(payload);
+      if (!emailResult.success && emailResult.status === "EMAIL_SEND_FAILED") {
+        setEmailStatusNote("Your message was received and saved in database, but email notification delivery failed.");
+      }
 
       if (submitBtnRef.current) {
         gsap.to(submitBtnRef.current, {
@@ -163,7 +173,7 @@ export default function Contact() {
         idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       }
     } catch (error) {
-      console.error("[CONTACT] submission failed", error);
+      console.error("[CONTACT] backend submission failed", error);
       btnTimeline.kill();
       if (submitBtnRef.current) {
         gsap.to(submitBtnRef.current, { text: "Send Message", duration: 0.3 });
@@ -236,13 +246,13 @@ export default function Contact() {
 
           <div>
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-              Let's <span style={{ color: 'var(--orange)' }}>Collaborate</span>
+              Let&apos;s <span style={{ color: 'var(--orange)' }}>Collaborate</span>
             </h2>
             <h3 className="text-2xl font-bold mt-1" style={{ color: 'var(--text-primary)' }}>
               Get In <span style={{ color: 'var(--green)' }}>Touch</span>
             </h3>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-              Let's build something meaningful together. Reach out for projects, research, or opportunities.
+              Let&apos;s build something meaningful together. Reach out for projects, research, or opportunities.
             </p>
           </div>
 
@@ -405,6 +415,11 @@ export default function Contact() {
               <p className="text-xs leading-relaxed max-w-sm mx-auto mb-6" style={{ color: 'var(--text-secondary)' }}>
                 Thank you for reaching out. Your message has been received by Manu Anandan G. You will receive a response shortly.
               </p>
+              {emailStatusNote && (
+                <div className="mb-6 p-3 rounded-xl text-xs font-mono text-amber-400 bg-amber-500/10 border border-amber-500/30 max-w-sm mx-auto">
+                  ℹ {emailStatusNote}
+                </div>
+              )}
               <button
                 className="px-6 py-3 rounded-xl text-xs font-mono font-bold text-white bg-[var(--green)] hover:bg-[var(--orange)] transition-colors duration-200 border-none cursor-pointer"
                 onClick={() => {

@@ -6,8 +6,6 @@ import com.manufolio.repository.ContactRepository;
 import com.manufolio.request.ContactRequest;
 import com.manufolio.service.ContactService;
 import lombok.extern.slf4j.Slf4j;
-import com.manufolio.event.ContactSubmittedEvent;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,15 +21,12 @@ public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository contactRepository;
     private final ContactMapper contactMapper;
-    private final ApplicationEventPublisher eventPublisher;
 
     public ContactServiceImpl(
             ContactRepository contactRepository,
-            ContactMapper contactMapper,
-            ApplicationEventPublisher eventPublisher) {
+            ContactMapper contactMapper) {
         this.contactRepository = contactRepository;
         this.contactMapper = contactMapper;
-        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -58,8 +53,5 @@ public class ContactServiceImpl implements ContactService {
         Contact savedContact = contactRepository.save(contact);
         log.info("[CONTACT] Contact message persisted: messageId={} from {} <{}>",
                 savedContact.getId(), savedContact.getName(), savedContact.getEmail());
-
-        // Publish event — ContactEventListener will process email notification AFTER_COMMIT
-        eventPublisher.publishEvent(new ContactSubmittedEvent(this, savedContact.getId()));
     }
 }
