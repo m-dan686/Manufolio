@@ -28,17 +28,24 @@ export const sendContactEmail = async (contactData) => {
     };
   }
 
+  const now = new Date();
+  const formattedDate = new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata"
+  }).format(now) + " IST";
+
   const templateParams = {
     from_name: contactData.name ? contactData.name.trim() : "",
     from_email: contactData.email ? contactData.email.trim() : "",
     phone: contactData.phone && contactData.phone.trim() ? contactData.phone.trim() : "Not provided",
     message: contactData.message ? contactData.message.trim() : "",
     reply_to: contactData.email ? contactData.email.trim() : "",
-    submitted_at: new Date().toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      dateStyle: "medium",
-      timeStyle: "short"
-    })
+    submitted_at: formattedDate
   };
 
   try {
