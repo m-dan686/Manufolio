@@ -18,6 +18,7 @@ public class ContactDTO {
     private Long id;
     private String name;
     private String email;
+    private String subject;
     private String phone;
     private String message;
     private Boolean read;

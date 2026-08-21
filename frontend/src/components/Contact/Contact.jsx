@@ -27,6 +27,12 @@ function validate(formData) {
     errors.email = "Enter a valid email address.";
   }
 
+  if (!formData.subject.trim()) {
+    errors.subject = "Subject is required.";
+  } else if (formData.subject.trim().length < 2) {
+    errors.subject = "Subject must be at least 2 characters.";
+  }
+
   if (formData.phone.trim() && !PHONE_REGEX.test(formData.phone.trim())) {
     errors.phone = "Enter a valid 10-digit Indian mobile number.";
   }
@@ -44,11 +50,9 @@ export default function Contact() {
   const leftRef = useRef(null);
   const rightRef = useRef(null);
   const submitBtnRef = useRef(null);
-  const idempotencyKeyRef = useRef(null);
 
   const [sent, setSent] = useState(false);
-  const [emailStatusNote, setEmailStatusNote] = useState('');
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', phone: '', message: '' });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [submitError, setSubmitError] = useState('');
@@ -74,9 +78,8 @@ export default function Contact() {
     console.debug("[CONTACT] handleSubmit entered");
     if (isSubmitting) return;
     setSubmitError('');
-    setEmailStatusNote('');
 
-    setTouched({ name: true, email: true, phone: true, message: true });
+    setTouched({ name: true, email: true, subject: true, phone: true, message: true });
     const allErrors = validate(formData);
     setErrors(allErrors);
 
@@ -112,85 +115,77 @@ export default function Contact() {
         });
     }
 
-    if (!idempotencyKeyRef.current) {
-      idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    }
-
     const payload = {
       name: formData.name.trim(),
       email: formData.email.trim(),
-      phone: formData.phone.trim(),
+      subject: formData.subject.trim(),
       message: formData.message.trim(),
-      idempotencyKey: idempotencyKeyRef.current,
-    };
-
-    console.debug("[CONTACT] submitting request to backend");
-
-    const attemptSubmission = async (isRetry = false) => {
-      try {
-        await submitContact(payload);
-        return true;
-      } catch (error) {
-        // Cold-start retry check: if network error / server error (5xx) and not retried yet, retry ONCE
-        const isNetworkOrServerError = !error.response || error.response.status >= 500;
-        if (!isRetry && isNetworkOrServerError) {
-          console.warn("[CONTACT] Primary submission failed due to cold-start / network error. Retrying once after 1.5s...");
-          await new Promise(resolve => setTimeout(resolve, 1500));
-          return await attemptSubmission(true);
-        }
-        throw error;
-      }
+      phone: formData.phone.trim()
     };
 
     try {
-      // 1. Save contact through Spring Boot API (MySQL persistence)
-      await attemptSubmission(false);
-      console.debug("[CONTACT] backend persistence successful");
+      let isSuccess = false;
+      let lastErrorMessage = '';
 
-      // 2. Trigger EmailJS notification ONLY AFTER backend persistence is confirmed
-      const emailResult = await sendContactEmail(payload);
-      if (!emailResult.success && emailResult.status === "EMAIL_SEND_FAILED") {
-        setEmailStatusNote("Your message was received and saved in database, but email notification delivery failed.");
+      // 1. Submit to Spring Boot Backend API (Saves to MySQL + Dispatches Google SMTP Email)
+      try {
+        await submitContact(payload);
+        isSuccess = true;
+      } catch (backendErr) {
+        console.warn("[CONTACT] Backend API submit failed, trying fallback...", backendErr);
+        lastErrorMessage = backendErr?.response?.data?.message || "Backend server unavailable.";
       }
 
-      if (submitBtnRef.current) {
-        gsap.to(submitBtnRef.current, {
-          duration: 0.4,
-          text: { value: "Sent!", type: "diff" },
-          ease: "power2.out",
-          onComplete: () => {
-            setTimeout(() => {
-              setSent(true);
-              setFormData({ name: '', email: '', phone: '', message: '' });
-              setErrors({});
-              setTouched({});
-              idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-            }, 500);
-          }
-        });
+      // 2. Fallback to EmailJS if backend is unreachable
+      if (!isSuccess) {
+        const emailResult = await sendContactEmail(payload);
+        if (emailResult.success) {
+          isSuccess = true;
+        } else if (emailResult.error) {
+          lastErrorMessage = emailResult.error;
+        }
+      }
+
+      if (isSuccess) {
+        if (submitBtnRef.current) {
+          gsap.to(submitBtnRef.current, {
+            duration: 0.4,
+            text: { value: "Sent!", type: "diff" },
+            ease: "power2.out",
+            onComplete: () => {
+              setTimeout(() => {
+                setSent(true);
+                setFormData({ name: '', email: '', subject: '', phone: '', message: '' });
+                setErrors({});
+                setTouched({});
+              }, 500);
+            }
+          });
+        } else {
+          setSent(true);
+          setFormData({ name: '', email: '', subject: '', phone: '', message: '' });
+          setErrors({});
+          setTouched({});
+        }
       } else {
-        setSent(true);
-        idempotencyKeyRef.current = crypto.randomUUID ? crypto.randomUUID() : `sub-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        btnTimeline.kill();
+        if (submitBtnRef.current) {
+          gsap.to(submitBtnRef.current, { text: "Send Message", duration: 0.3 });
+        }
+        setSubmitError(lastErrorMessage || "Unable to send your message right now. Please try again.");
       }
     } catch (error) {
-      console.error("[CONTACT] backend submission failed", error);
+      console.error("[CONTACT] submission error:", error);
       btnTimeline.kill();
       if (submitBtnRef.current) {
         gsap.to(submitBtnRef.current, { text: "Send Message", duration: 0.3 });
       }
-
-      const serverMessage = error.response?.data?.message;
-      if (serverMessage) {
-        setSubmitError(`Submission error: ${serverMessage}`);
-      } else if (error.response?.status === 429) {
-        setSubmitError("Too many requests. Please try again later.");
-      } else {
-        setSubmitError("Unable to reach the server right now. Please try again in a moment.");
-      }
+      setSubmitError("Unable to send your message right now. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -345,6 +340,29 @@ export default function Contact() {
               </div>
 
               <div>
+                <label htmlFor="contact-subject" className="block text-xs font-mono font-bold uppercase mb-2" style={{ color: 'var(--text-secondary)' }}>
+                  Subject *
+                </label>
+                <input
+                  id="contact-subject"
+                  name="subject"
+                  type="text"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Enter subject of your message"
+                  autoComplete="off"
+                  className={`w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 outline-none border-2 ${
+                    errors.subject && touched.subject ? "border-red-500 bg-red-500/5" : "border-[var(--border-neutral)] bg-[var(--bg-secondary)] focus:border-[var(--green)]"
+                  }`}
+                  style={{ color: 'var(--text-primary)' }}
+                />
+                {errors.subject && touched.subject && (
+                  <span className="text-xs font-mono text-red-500 mt-1 block">⚠ {errors.subject}</span>
+                )}
+              </div>
+
+              <div>
                 <label htmlFor="contact-phone" className="block text-xs font-mono font-bold uppercase mb-2" style={{ color: 'var(--text-secondary)' }}>
                   Phone Number (Optional)
                 </label>
@@ -415,17 +433,13 @@ export default function Contact() {
               <p className="text-xs leading-relaxed max-w-sm mx-auto mb-6" style={{ color: 'var(--text-secondary)' }}>
                 Thank you for reaching out. Your message has been received by Manu Anandan G. You will receive a response shortly.
               </p>
-              {emailStatusNote && (
-                <div className="mb-6 p-3 rounded-xl text-xs font-mono text-amber-400 bg-amber-500/10 border border-amber-500/30 max-w-sm mx-auto">
-                  ℹ {emailStatusNote}
-                </div>
-              )}
               <button
                 className="px-6 py-3 rounded-xl text-xs font-mono font-bold text-white bg-[var(--green)] hover:bg-[var(--orange)] transition-colors duration-200 border-none cursor-pointer"
                 onClick={() => {
                   setSent(false);
                   setTouched({});
                   setErrors({});
+                  setSubmitError('');
                 }}
               >
                 ✉ Send Another Message
@@ -437,3 +451,4 @@ export default function Contact() {
     </section>
   );
 }
+

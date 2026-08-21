@@ -5,6 +5,7 @@ import com.manufolio.mapper.ContactMapper;
 import com.manufolio.repository.ContactRepository;
 import com.manufolio.request.ContactRequest;
 import com.manufolio.service.ContactService;
+import com.manufolio.service.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,15 @@ public class ContactServiceImpl implements ContactService {
 
     private final ContactRepository contactRepository;
     private final ContactMapper contactMapper;
+    private final EmailService emailService;
 
     public ContactServiceImpl(
             ContactRepository contactRepository,
-            ContactMapper contactMapper) {
+            ContactMapper contactMapper,
+            EmailService emailService) {
         this.contactRepository = contactRepository;
         this.contactMapper = contactMapper;
+        this.emailService = emailService;
     }
 
     @Override
@@ -53,5 +57,13 @@ public class ContactServiceImpl implements ContactService {
         Contact savedContact = contactRepository.save(contact);
         log.info("[CONTACT] Contact message persisted: messageId={} from {} <{}>",
                 savedContact.getId(), savedContact.getName(), savedContact.getEmail());
+
+        // Dispatch Google SMTP Notification
+        try {
+            emailService.sendContactNotificationEmail(savedContact);
+        } catch (Exception e) {
+            log.error("[CONTACT] Email notification dispatch failed for messageId={}: {}", savedContact.getId(), e.getMessage());
+        }
     }
 }
+

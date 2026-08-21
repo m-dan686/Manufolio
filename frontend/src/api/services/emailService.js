@@ -8,7 +8,7 @@ import emailjs from "@emailjs/browser";
 /**
  * Sends contact notification email via EmailJS.
  *
- * @param {{ name: string, email: string, phone?: string, message: string }} contactData
+ * @param {{ name: string, email: string, subject?: string, message: string, phone?: string }} contactData
  * @returns {Promise<{ success: boolean, status: string, error?: string }>}
  */
 export const sendContactEmail = async (contactData) => {
@@ -24,35 +24,19 @@ export const sendContactEmail = async (contactData) => {
     return {
       success: false,
       status: "UNCONFIGURED",
-      error: "EmailJS environment variables not configured"
+      error: "Email service is not configured. Please set EmailJS environment variables."
     };
   }
-
-  const now = new Date();
-  const formattedDate = new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-    timeZone: "Asia/Kolkata"
-  }).format(now) + " IST";
 
   const templateParams = {
     from_name: contactData.name ? contactData.name.trim() : "",
     from_email: contactData.email ? contactData.email.trim() : "",
-    phone: contactData.phone && contactData.phone.trim() ? contactData.phone.trim() : "Not provided",
-    message: contactData.message ? contactData.message.trim() : "",
-    reply_to: contactData.email ? contactData.email.trim() : "",
-    submitted_at: formattedDate
+    subject: contactData.subject ? contactData.subject.trim() : "General Inquiry",
+    message: contactData.message ? contactData.message.trim() : ""
   };
 
   try {
-    const response = await emailjs.send(serviceId, templateId, templateParams, {
-      publicKey: publicKey,
-      blockHeadless: true
-    });
+    const response = await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
     console.info("[EMAILJS] Contact notification email sent successfully", response);
     return {
@@ -66,7 +50,8 @@ export const sendContactEmail = async (contactData) => {
     return {
       success: false,
       status: "EMAIL_SEND_FAILED",
-      error: errorMessage
+      error: "Unable to send your message right now. Please try again."
     };
   }
 };
+

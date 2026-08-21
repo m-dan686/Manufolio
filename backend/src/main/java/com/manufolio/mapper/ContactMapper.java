@@ -24,10 +24,14 @@ public class ContactMapper {
         String key = (request.getIdempotencyKey() == null || request.getIdempotencyKey().trim().isEmpty())
                 ? null : request.getIdempotencyKey().trim();
 
+        String subjectInput = request.getSubject();
+        String normalizedSubject = (subjectInput == null || subjectInput.trim().isEmpty()) ? "General Inquiry" : subjectInput.trim();
+
         return Contact.builder()
                 .idempotencyKey(key)
                 .name(request.getName().trim())
                 .email(request.getEmail().trim().toLowerCase())
+                .subject(normalizedSubject)
                 .phone(normalizedPhone)
                 .message(request.getMessage().trim())
                 .read(false)
@@ -44,6 +48,7 @@ public class ContactMapper {
                 .id(contact.getId())
                 .name(contact.getName())
                 .email(contact.getEmail())
+                .subject(contact.getSubject())
                 .phone(contact.getPhone())
                 .message(contact.getMessage())
                 .read(contact.getRead())

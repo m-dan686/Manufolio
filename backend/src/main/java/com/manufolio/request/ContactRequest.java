@@ -19,6 +19,9 @@ public class ContactRequest {
     @Size(max = 150, message = "Email must not exceed 150 characters")
     private String email;
 
+    @Size(max = 200, message = "Subject must not exceed 200 characters")
+    private String subject;
+
     @Pattern(regexp = "^$|^[6-9]\\d{9}$", message = "Enter a valid 10-digit Indian mobile number")
     private String phone;
 

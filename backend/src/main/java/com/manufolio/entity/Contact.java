@@ -43,6 +43,9 @@ public class Contact {
     @Column(nullable = false, length = 150)
     private String email;
 
+    @Column(name = "subject", length = 200)
+    private String subject;
+
     @Column(name = "phone", length = 20)
     private String phone;
 
